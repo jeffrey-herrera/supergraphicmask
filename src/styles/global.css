@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "/fonts/fonts.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -116,5 +117,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'AribauGrotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
 }

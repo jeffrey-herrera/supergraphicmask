@@ -122,12 +122,8 @@ export function ExportButton() {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-medium">Export</h3>
       
       <div className="space-y-3">
-        <div className="text-xs text-muted-foreground">
-          Export your masked image as a transparent PNG file.
-        </div>
         
         <Button
           onClick={handleExport}
