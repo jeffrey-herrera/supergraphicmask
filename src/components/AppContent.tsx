@@ -5,7 +5,7 @@ import { BottomControls } from './BottomControls';
 import { Toaster } from '@/components/ui/sonner';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useAppState } from '@/lib/store';
-import { getMaskById } from '@/data/masks';
+import { getMaskById } from '@/data/masks.tsx';
 
 export function AppContent() {
   const { state, dispatch } = useAppState();

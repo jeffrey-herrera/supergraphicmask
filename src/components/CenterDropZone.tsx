@@ -127,7 +127,7 @@ export function CenterDropZone() {
 
   const handleClick = () => {
     if (!isProcessing) {
-      fileInputRef.current?.click();
+    fileInputRef.current?.click();
     }
   };
 
@@ -162,10 +162,10 @@ export function CenterDropZone() {
           {isProcessing ? (
             <Loader2 className="w-8 h-8 text-primary animate-spin" />
           ) : (
-            <Upload className={`
-              w-8 h-8 transition-colors duration-200
-              ${isDragging ? 'text-primary' : 'text-muted-foreground'}
-            `} />
+          <Upload className={`
+            w-8 h-8 transition-colors duration-200
+            ${isDragging ? 'text-primary' : 'text-muted-foreground'}
+          `} />
           )}
         </div>
         

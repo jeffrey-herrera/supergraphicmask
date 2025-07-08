@@ -1,7 +1,10 @@
 import { Card } from '@/components/ui/card';
 import { useAppState } from '@/lib/store';
-import { masks } from '@/data/masks';
+import { masks } from '@/data/masks.tsx';
 import { cn } from '@/lib/utils';
+
+const INACTIVE_COLOR = '#C9C4FF';
+const ACTIVE_COLOR = '#801ED7';
 
 export function MaskSelector() {
   const { state, dispatch } = useAppState();
@@ -14,27 +17,23 @@ export function MaskSelector() {
     <div className="space-y-4">
       <h3 className="text-sm font-medium">Select Mask</h3>
       <div className="grid grid-cols-2 gap-3">
-          {masks.map((mask) => (
+        {masks.map((mask) => {
+          const isActive = state.selectedMask === mask.id;
+          return (
             <button
               key={mask.id}
               onClick={() => handleMaskSelect(mask.id)}
               className={cn(
                 "relative p-4 rounded-lg border-2 transition-all duration-200 hover:border-primary/50 hover:scale-105",
-                state.selectedMask === mask.id
+                isActive
                   ? "border-primary bg-primary/5 scale-105"
                   : "border-muted-foreground/25 hover:bg-muted/5"
               )}
             >
               <div className="flex items-center justify-center">
-                <img
-                  src={mask.path}
-                  alt={mask.name}
-                  className="w-12 h-12 object-contain transition-opacity duration-200"
-                  loading="lazy"
-                  style={{ filter: 'brightness(0)' }}
-                />
+                {mask.preview(isActive ? ACTIVE_COLOR : INACTIVE_COLOR)}
               </div>
-              {state.selectedMask === mask.id && (
+              {isActive && (
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center animate-in zoom-in duration-200">
                   <svg
                     className="w-2 h-2 text-primary-foreground"
@@ -50,7 +49,8 @@ export function MaskSelector() {
                 </div>
               )}
             </button>
-          ))}
+          );
+        })}
         </div>
     </div>
   );

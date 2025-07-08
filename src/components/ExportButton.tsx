@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAppState } from '@/lib/store';
-import { getMaskById } from '@/data/masks';
+import { getMaskById } from '@/data/masks.tsx';
 import { Download, Loader2, Check } from 'lucide-react';
 
 // Export size options
@@ -57,7 +57,7 @@ export function ExportButton() {
       const margin = 0.02;
       const availableWidth = canvas.width * (1 - margin * 2);
       const availableHeight = canvas.height * (1 - margin * 2);
-      
+          
       // Calculate mask size to fit in available space while maintaining aspect ratio
       const maskAspect = maskImg.width / maskImg.height;
       const availableAspect = availableWidth / availableHeight;
@@ -76,9 +76,9 @@ export function ExportButton() {
       // Center the mask on canvas
       const maskX = (canvas.width - maskDisplayWidth) / 2;
       const maskY = (canvas.height - maskDisplayHeight) / 2;
-
+              
       // Calculate image size and position within mask bounds (same as preview)
-      const { scale, translateX, translateY } = state.transform;
+              const { scale, translateX, translateY } = state.transform;
       
       // Make image fill mask bounds by default (like CSS object-fit: cover)
       const imageAspect = sourceImg.width / sourceImg.height;
@@ -97,7 +97,7 @@ export function ExportButton() {
       // Apply user scale and translation
       const finalImageWidth = baseImageWidth * scale;
       const finalImageHeight = baseImageHeight * scale;
-      
+              
       // Scale translation for export size (relative to preview canvas)
       const previewCanvasSize = Math.min(window.innerWidth - 400, window.innerHeight - 100);
       const scaleRatio = exportSize / previewCanvasSize;
@@ -129,22 +129,22 @@ export function ExportButton() {
 
       // Reset composite operation
       ctx.globalCompositeOperation = 'source-over';
-
-      // Download the image
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
+              
+              // Download the image
+              canvas.toBlob((blob) => {
+                if (blob) {
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
           a.download = `masked-image-${exportSize}x${exportSize}-${Date.now()}.png`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }
-        
-        setIsExporting(false);
-        dispatch({ type: 'SET_EXPORTING', payload: false });
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                }
+                
+                setIsExporting(false);
+                dispatch({ type: 'SET_EXPORTING', payload: false });
       }, 'image/png', 1.0); // Max quality
 
     } catch (error) {
@@ -161,7 +161,7 @@ export function ExportButton() {
       <div className="space-y-3">
         {/* Size Selector */}
         <div className="space-y-2">
-          <label className="text-xs font-medium text-muted-foreground">Export Size</label>
+        <h3 className="text-sm font-medium">Export Size</h3>
           <div className="grid grid-cols-3 gap-1">
             {EXPORT_SIZES.map((size) => (
               <button
@@ -190,24 +190,22 @@ export function ExportButton() {
         </div>
 
         {/* Export Button */}
-        <Button
+        <button
           onClick={() => handleExport(selectedSize)}
           disabled={isDisabled}
-          className="w-full"
-          size="sm"
+          className={`w-full font-bold text-sm sm:text-base py-3 sm:py-4 px-4 sm:px-6 rounded-full shadow-2xl transition-all duration-300 transform flex items-center justify-center gap-2 sm:gap-3 relative overflow-hidden ${
+            isDisabled 
+              ? 'bg-gray-400 text-gray-200 cursor-not-allowed opacity-60' 
+              : 'bg-gradient-to-r from-[#5710E5] via-[#7C3AED] to-[#A855F7] hover:from-[#4A0DCC] hover:via-[#6B21A8] hover:to-[#9333EA] text-white hover:shadow-[0_20px_40px_-8px_rgba(87,16,229,0.6)] hover:scale-[1.02] active:scale-[0.98]'
+          }`}
         >
           {isExporting ? (
-            <>
-              <Loader2 className="w-3 h-3 mr-2 animate-spin" />
-              Exporting {selectedSize}px...
-            </>
+            <Loader2 className="w-5 h-5 animate-spin" />
           ) : (
-            <>
-              <Download className="w-3 h-3 mr-2" />
-              Export {selectedSize}px PNG
-            </>
+            <Download className="w-5 h-5" />
           )}
-        </Button>
+          <span>{isExporting ? 'Exporting...' : 'Export Image'}</span>
+        </button>
         
         {isDisabled && !isExporting && (
           <p className="text-xs text-muted-foreground text-center">

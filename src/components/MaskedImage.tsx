@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { useAppState } from '@/lib/store';
-import { getMaskById } from '@/data/masks';
+import { getMaskById } from '@/data/masks.tsx';
 import { CenterDropZone } from './CenterDropZone';
 
 export function MaskedImage() {
@@ -70,7 +70,7 @@ export function MaskedImage() {
   const drawCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
-    
+
     if (!canvas || !ctx || !sourceImage || !maskImage) {
       return;
     }
@@ -118,7 +118,7 @@ export function MaskedImage() {
       baseImageWidth = maskDisplayWidth;
       baseImageHeight = baseImageWidth / imageAspect;
     }
-    
+
     // Apply user scale
     const finalImageWidth = baseImageWidth * scale;
     const finalImageHeight = baseImageHeight * scale;
@@ -214,10 +214,10 @@ export function MaskedImage() {
     
     if (e.touches.length === 1) {
       // Single touch - pan gesture
-      const touch = e.touches[0];
-      setIsDragging(true);
+    const touch = e.touches[0];
+    setIsDragging(true);
       setIsMultiTouch(false);
-      setDragStart({ x: touch.clientX, y: touch.clientY });
+    setDragStart({ x: touch.clientX, y: touch.clientY });
     } else if (e.touches.length === 2) {
       // Two finger touch - pinch/zoom gesture
       const touch1 = e.touches[0];
@@ -234,28 +234,28 @@ export function MaskedImage() {
     if (!state.selectedImage) return;
     
     e.preventDefault();
-    
+
     if (e.touches.length === 1 && isDragging && !isMultiTouch) {
       // Single touch pan
-      const touch = e.touches[0];
-      const deltaX = touch.clientX - dragStart.x;
-      const deltaY = touch.clientY - dragStart.y;
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - dragStart.x;
+    const deltaY = touch.clientY - dragStart.y;
 
-      dispatch({
-        type: 'SET_TRANSFORM',
-        payload: {
-          ...state.transform,
+    dispatch({
+      type: 'SET_TRANSFORM',
+      payload: {
+        ...state.transform,
           translateX: state.transform.translateX + deltaX,
           translateY: state.transform.translateY + deltaY,
-        },
-      });
+      },
+    });
 
-      setDragStart({ x: touch.clientX, y: touch.clientY });
+    setDragStart({ x: touch.clientX, y: touch.clientY });
     } else if (e.touches.length === 2 && isMultiTouch) {
       // Two finger pinch/zoom and pan
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
-      
+
       const currentDistance = getTouchDistance(touch1, touch2);
       const currentCenter = getTouchCenter(touch1, touch2);
       
@@ -287,7 +287,7 @@ export function MaskedImage() {
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (e.touches.length === 0) {
       // All touches ended
-      setIsDragging(false);
+    setIsDragging(false);
       setIsMultiTouch(false);
       setLastTouchDistance(0);
     } else if (e.touches.length === 1 && isMultiTouch) {

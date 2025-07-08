@@ -171,18 +171,18 @@ export function ImageUploader() {
             </>
           ) : (
             <>
-              <ImageIcon className="w-8 h-8 mx-auto mb-3 text-muted-foreground" />
-              <p className="text-xs text-muted-foreground mb-3">
-                Drag and drop an image here, or click to select
-              </p>
+          <ImageIcon className="w-8 h-8 mx-auto mb-3 text-muted-foreground" />
+          <p className="text-xs text-muted-foreground mb-3">
+            Drag and drop an image here, or click to select
+          </p>
               <Button 
                 size="sm" 
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isDisabled}
               >
-                <Upload className="w-3 h-3 mr-2" />
-                Select Image
-              </Button>
+            <Upload className="w-3 h-3 mr-2" />
+            Select Image
+          </Button>
               <p className="text-xs text-muted-foreground/60 mt-2">
                 Large images will be automatically optimized
               </p>
@@ -221,8 +221,8 @@ export function ImageUploader() {
                 </>
               ) : (
                 <>
-                  <Upload className="w-3 h-3 mr-1" />
-                  Replace
+              <Upload className="w-3 h-3 mr-1" />
+              Replace
                 </>
               )}
             </Button>
