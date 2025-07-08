@@ -1,5 +1,6 @@
 ---
-
+import { App } from '@/components/App';
+import '@/styles/global.css';
 ---
 
 <html lang="en">
@@ -8,9 +9,10 @@
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>SupergraphicMask - SVG Image Masking Tool</title>
+		<meta name="description" content="Transform your images with stylized SVG masks using our intuitive web-based tool" />
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<App client:load />
 	</body>
 </html>
