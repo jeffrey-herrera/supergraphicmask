@@ -189,36 +189,115 @@ export function MaskedImage() {
     setIsDragging(false);
   };
 
-  // Touch event handlers
+  // Enhanced touch event handlers with pinch-to-zoom and multi-touch pan
+  const [lastTouchDistance, setLastTouchDistance] = useState<number>(0);
+  const [lastTouchCenter, setLastTouchCenter] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isMultiTouch, setIsMultiTouch] = useState(false);
+
+  const getTouchDistance = (touch1: React.Touch, touch2: React.Touch): number => {
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  const getTouchCenter = (touch1: React.Touch, touch2: React.Touch): { x: number; y: number } => {
+    return {
+      x: (touch1.clientX + touch2.clientX) / 2,
+      y: (touch1.clientY + touch2.clientY) / 2,
+    };
+  };
+
   const handleTouchStart = (e: React.TouchEvent) => {
     if (!state.selectedImage) return;
     
-    const touch = e.touches[0];
-    setIsDragging(true);
-    setDragStart({ x: touch.clientX, y: touch.clientY });
+    e.preventDefault();
+    
+    if (e.touches.length === 1) {
+      // Single touch - pan gesture
+      const touch = e.touches[0];
+      setIsDragging(true);
+      setIsMultiTouch(false);
+      setDragStart({ x: touch.clientX, y: touch.clientY });
+    } else if (e.touches.length === 2) {
+      // Two finger touch - pinch/zoom gesture
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      
+      setIsDragging(false);
+      setIsMultiTouch(true);
+      setLastTouchDistance(getTouchDistance(touch1, touch2));
+      setLastTouchCenter(getTouchCenter(touch1, touch2));
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || !state.selectedImage) return;
+    if (!state.selectedImage) return;
+    
+    e.preventDefault();
+    
+    if (e.touches.length === 1 && isDragging && !isMultiTouch) {
+      // Single touch pan
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - dragStart.x;
+      const deltaY = touch.clientY - dragStart.y;
 
-    const touch = e.touches[0];
-    const deltaX = touch.clientX - dragStart.x;
-    const deltaY = touch.clientY - dragStart.y;
+      dispatch({
+        type: 'SET_TRANSFORM',
+        payload: {
+          ...state.transform,
+          translateX: state.transform.translateX + deltaX,
+          translateY: state.transform.translateY + deltaY,
+        },
+      });
 
-    dispatch({
-      type: 'SET_TRANSFORM',
-      payload: {
-        ...state.transform,
-        translateX: state.transform.translateX + deltaX,
-        translateY: state.transform.translateY + deltaY,
-      },
-    });
-
-    setDragStart({ x: touch.clientX, y: touch.clientY });
+      setDragStart({ x: touch.clientX, y: touch.clientY });
+    } else if (e.touches.length === 2 && isMultiTouch) {
+      // Two finger pinch/zoom and pan
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      
+      const currentDistance = getTouchDistance(touch1, touch2);
+      const currentCenter = getTouchCenter(touch1, touch2);
+      
+      // Handle pinch-to-zoom
+      if (lastTouchDistance > 0) {
+        const scaleChange = currentDistance / lastTouchDistance;
+        const newScale = Math.max(0.1, Math.min(3, state.transform.scale * scaleChange));
+        
+        // Handle two-finger pan
+        const panX = currentCenter.x - lastTouchCenter.x;
+        const panY = currentCenter.y - lastTouchCenter.y;
+        
+        dispatch({
+          type: 'SET_TRANSFORM',
+          payload: {
+            ...state.transform,
+            scale: newScale,
+            translateX: state.transform.translateX + panX,
+            translateY: state.transform.translateY + panY,
+          },
+        });
+      }
+      
+      setLastTouchDistance(currentDistance);
+      setLastTouchCenter(currentCenter);
+    }
   };
 
-  const handleTouchEnd = () => {
-    setIsDragging(false);
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (e.touches.length === 0) {
+      // All touches ended
+      setIsDragging(false);
+      setIsMultiTouch(false);
+      setLastTouchDistance(0);
+    } else if (e.touches.length === 1 && isMultiTouch) {
+      // Switched from multi-touch to single touch
+      const touch = e.touches[0];
+      setIsMultiTouch(false);
+      setIsDragging(true);
+      setDragStart({ x: touch.clientX, y: touch.clientY });
+      setLastTouchDistance(0);
+    }
   };
 
   // Full-screen drop handlers for image upload
@@ -351,7 +430,8 @@ export function MaskedImage() {
         {/* Helper text when active */}
         {state.selectedImage && selectedMask && (
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center text-xs text-muted-foreground/60 bg-background/60 backdrop-blur-sm px-3 py-1 rounded-full">
-            Drag to pan • Scroll to zoom
+            <span className="hidden sm:inline">Drag to pan • Scroll to zoom</span>
+            <span className="sm:hidden">Drag to pan • Pinch to zoom</span>
           </div>
         )}
       </div>
