@@ -22,11 +22,13 @@ export function AppContent() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Floating Sidebar */}
+      {/* Horizontal Sidebar */}
       <FloatingSidebar />
       
-      {/* Full-screen Preview */}
-      <MaskedImage />
+      {/* Full-screen Preview - with top padding for horizontal sidebar */}
+      <div className="pt-40 md:pt-32 lg:pt-28">
+        <MaskedImage />
+      </div>
       
       {/* Floating Bottom Controls */}
       <BottomControls />

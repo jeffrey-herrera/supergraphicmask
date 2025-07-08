@@ -29,7 +29,7 @@ export function MaskSelector() {
       <h3 className="text-sm font-medium">
         Choose a Shape {isDisabled && <span className="text-[10px] font-normal block">(Upload an image to unlock mask options)</span>}
       </h3>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="flex gap-2 overflow-x-auto pb-2">
         {masks.map((mask, index) => {
           const isActive = state.selectedMask === mask.id;
           return (
@@ -38,7 +38,7 @@ export function MaskSelector() {
               onClick={() => handleMaskSelect(mask.id)}
               disabled={isDisabled}
               className={cn(
-                "relative p-4 rounded-lg border-2 smooth-transition",
+                "relative p-3 rounded-lg border-2 smooth-transition flex-shrink-0 w-16 h-16",
                 "animate-slide-in-up",
                 isDisabled 
                   ? "border-muted-foreground/25 bg-muted/20 cursor-not-allowed opacity-50"

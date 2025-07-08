@@ -9,28 +9,28 @@ export function FloatingSidebar() {
   const { state } = useAppState();
 
   return (
-    <div className="fixed z-40 w-80 max-w-[calc(100vw-48px)] bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-xl overflow-hidden" style={{ top: '32px', left: '32px', maxHeight: 'calc(100vh - 48px)' }}>
+    <div className="fixed top-2 left-2 right-2 lg:top-4 lg:left-4 lg:right-4 z-40 bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-xl overflow-hidden">
       {/* Header */}
-      <div className="py-6 px-8 border-b flex flex-col bg-gradient-to-br from-white/95 via-blue-50/60 to-purple-50/40 backdrop-blur-md">
-        <img src="/Braze_Primary_logo_PURPLE.svg" alt="Braze Logo" className="w-16 h-auto" />
-        <h2 className="text-3xl font-semibold">SuperMask</h2>
+      <div className="py-3 px-4 lg:py-4 lg:px-6 border-b flex items-center gap-3 lg:gap-4 bg-gradient-to-br from-white/95 via-blue-50/60 to-purple-50/40 backdrop-blur-md">
+        <img src="/Braze_Primary_logo_PURPLE.svg" alt="Braze Logo" className="w-8 h-auto lg:w-12" />
+        <h2 className="text-xl lg:text-2xl font-semibold">SuperMask</h2>
       </div>
       
-      {/* Content - All sections always visible */}
-      <div className="overflow-y-auto flex-1" style={{ maxHeight: 'calc(100vh - 48px - 4rem)' }}>
-        <div className="p-8 space-y-8">
+      {/* Horizontal Content Layout */}
+      <div className="p-3 lg:p-4">
+        <div className="flex flex-col md:flex-row gap-3 lg:gap-6">
           {/* Upload Section */}
-          <div>
+          <div className="flex-1 min-w-0">
             <ImageUploader />
           </div>
 
           {/* Masks Section */}
-          <div>
+          <div className="flex-1 min-w-0">
             <MaskSelector />
           </div>
 
           {/* Export Section */}
-          <div>
+          <div className="flex-shrink-0 md:min-w-[120px]">
             <ExportButton />
           </div>
         </div>
