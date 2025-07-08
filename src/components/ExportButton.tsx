@@ -121,41 +121,39 @@ export function ExportButton() {
   const isDisabled = !state.selectedImage || !state.selectedMask || isExporting;
 
   return (
-    <Card className="p-6">
-      <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Export</h2>
-        
-        <div className="space-y-4">
-          <div className="text-sm text-muted-foreground">
-            Export your masked image as a transparent PNG file.
-          </div>
-          
-          <Button
-            onClick={handleExport}
-            disabled={isDisabled}
-            className="w-full"
-            size="lg"
-          >
-            {isExporting ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Exporting...
-              </>
-            ) : (
-              <>
-                <Download className="w-4 h-4 mr-2" />
-                Export PNG
-              </>
-            )}
-          </Button>
-          
-          {isDisabled && !isExporting && (
-            <p className="text-xs text-muted-foreground text-center">
-              Select an image and mask to export
-            </p>
-          )}
+    <div className="space-y-4">
+      <h3 className="text-sm font-medium">Export</h3>
+      
+      <div className="space-y-3">
+        <div className="text-xs text-muted-foreground">
+          Export your masked image as a transparent PNG file.
         </div>
+        
+        <Button
+          onClick={handleExport}
+          disabled={isDisabled}
+          className="w-full"
+          size="sm"
+        >
+          {isExporting ? (
+            <>
+              <Loader2 className="w-3 h-3 mr-2 animate-spin" />
+              Exporting...
+            </>
+          ) : (
+            <>
+              <Download className="w-3 h-3 mr-2" />
+              Export PNG
+            </>
+          )}
+        </Button>
+        
+        {isDisabled && !isExporting && (
+          <p className="text-xs text-muted-foreground text-center">
+            Select an image and mask to export
+          </p>
+        )}
       </div>
-    </Card>
+    </div>
   );
 }

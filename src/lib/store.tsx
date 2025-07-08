@@ -11,25 +11,28 @@ export interface AppState {
   selectedMask: string | null;
   transform: Transform;
   isExporting: boolean;
+  isDragging: boolean;
 }
 
 type AppAction =
-  | { type: 'SET_IMAGE'; payload: string }
-  | { type: 'SET_MASK'; payload: string }
+  | { type: 'SET_IMAGE'; payload: string | null }
+  | { type: 'SET_MASK'; payload: string | null }
   | { type: 'SET_TRANSFORM'; payload: Transform }
   | { type: 'RESET_TRANSFORM' }
   | { type: 'SET_EXPORTING'; payload: boolean }
+  | { type: 'SET_DRAGGING'; payload: boolean }
   | { type: 'RESET_STATE' };
 
 const initialState: AppState = {
   selectedImage: null,
-  selectedMask: null,
+  selectedMask: 'mask1',
   transform: {
     scale: 1,
     translateX: 0,
     translateY: 0,
   },
   isExporting: false,
+  isDragging: false,
 };
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -44,6 +47,8 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, transform: initialState.transform };
     case 'SET_EXPORTING':
       return { ...state, isExporting: action.payload };
+    case 'SET_DRAGGING':
+      return { ...state, isDragging: action.payload };
     case 'RESET_STATE':
       return initialState;
     default:

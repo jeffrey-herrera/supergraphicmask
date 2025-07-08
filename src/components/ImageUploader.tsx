@@ -33,16 +33,19 @@ export function ImageUploader() {
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
+    dispatch({ type: 'SET_DRAGGING', payload: true });
   };
 
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
+    dispatch({ type: 'SET_DRAGGING', payload: false });
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
+    dispatch({ type: 'SET_DRAGGING', payload: false });
     
     const file = e.dataTransfer.files[0];
     if (file) {
@@ -58,41 +61,67 @@ export function ImageUploader() {
   };
 
   return (
-    <Card className="p-6">
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Upload Image</h2>
-          {state.selectedImage && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleRemoveImage}
-              className="text-destructive hover:text-destructive"
-            >
-              <X className="w-4 h-4 mr-1" />
-              Remove
-            </Button>
-          )}
-        </div>
-
-        {!state.selectedImage ? (
-          <div
-            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-              isDragging
-                ? 'border-primary bg-primary/5'
-                : 'border-muted-foreground/25 hover:border-muted-foreground/50'
-            }`}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-medium">Upload Image</h3>
+        {state.selectedImage && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleRemoveImage}
+            className="text-destructive hover:text-destructive h-6 px-2"
           >
-            <ImageIcon className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground mb-4">
-              Drag and drop an image here, or click to select
-            </p>
-            <Button onClick={() => fileInputRef.current?.click()}>
-              <Upload className="w-4 h-4 mr-2" />
-              Select Image
+            <X className="w-3 h-3 mr-1" />
+            Remove
+          </Button>
+        )}
+      </div>
+
+      {!state.selectedImage ? (
+        <div
+          className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+            isDragging
+              ? 'border-primary bg-primary/5'
+              : 'border-muted-foreground/25 hover:border-muted-foreground/50'
+          }`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          <ImageIcon className="w-8 h-8 mx-auto mb-3 text-muted-foreground" />
+          <p className="text-xs text-muted-foreground mb-3">
+            Drag and drop an image here, or click to select
+          </p>
+          <Button size="sm" onClick={() => fileInputRef.current?.click()}>
+            <Upload className="w-3 h-3 mr-2" />
+            Select Image
+          </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileInput}
+          />
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <div className="relative">
+            <img
+              src={state.selectedImage}
+              alt="Selected image"
+              className="w-full h-24 object-cover rounded-lg"
+            />
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => fileInputRef.current?.click()}
+              className="flex-1"
+            >
+              <Upload className="w-3 h-3 mr-1" />
+              Replace
             </Button>
             <input
               ref={fileInputRef}
@@ -102,35 +131,8 @@ export function ImageUploader() {
               onChange={handleFileInput}
             />
           </div>
-        ) : (
-          <div className="space-y-4">
-            <div className="relative">
-              <img
-                src={state.selectedImage}
-                alt="Selected image"
-                className="w-full h-32 object-cover rounded-lg"
-              />
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Upload className="w-4 h-4 mr-1" />
-                Replace
-              </Button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileInput}
-              />
-            </div>
-          </div>
-        )}
-      </div>
-    </Card>
+        </div>
+      )}
+    </div>
   );
 }
