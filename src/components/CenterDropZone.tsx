@@ -8,9 +8,12 @@ const JPEG_QUALITY = 0.85; // Quality for JPEG compression
 
 export function CenterDropZone() {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
+  const [localIsDragging, setLocalIsDragging] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { state, dispatch } = useAppState();
+
+  // Use global drag state OR local drag state for visual feedback
+  const isDragging = state.isDragging || localIsDragging;
 
   const optimizeImage = async (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -101,19 +104,19 @@ export function CenterDropZone() {
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragging(true);
+    setLocalIsDragging(true);
     dispatch({ type: 'SET_DRAGGING', payload: true });
   };
 
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragging(false);
+    setLocalIsDragging(false);
     dispatch({ type: 'SET_DRAGGING', payload: false });
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragging(false);
+    setLocalIsDragging(false);
     dispatch({ type: 'SET_DRAGGING', payload: false });
     
     const file = e.dataTransfer.files[0];
