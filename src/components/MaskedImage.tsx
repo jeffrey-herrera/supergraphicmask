@@ -7,7 +7,11 @@ export function MaskedImage() {
   const { state, dispatch } = useAppState();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const isDraggingRef = useRef(isDragging);
+  useEffect(() => { isDraggingRef.current = isDragging; }, [isDragging]);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const dragStartRef = useRef(dragStart);
+  useEffect(() => { dragStartRef.current = dragStart; }, [dragStart]);
   const [maskImage, setMaskImage] = useState<HTMLImageElement | null>(null);
   const [sourceImage, setSourceImage] = useState<HTMLImageElement | null>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 800, height: 600 });
@@ -169,6 +173,115 @@ export function MaskedImage() {
     drawCanvas();
   }, [drawCanvas]);
 
+  // --- Native event handler versions for passive: false ---
+  // Native touch and wheel handlers
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    // Touch events
+    const handleNativeTouchStart = (e: TouchEvent) => {
+      if (!state.selectedImage) return;
+      e.preventDefault();
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        setIsDragging(true);
+        setIsMultiTouch(false);
+        setDragStart({ x: touch.clientX, y: touch.clientY });
+      } else if (e.touches.length === 2) {
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        setIsDragging(false);
+        setIsMultiTouch(true);
+        setLastTouchDistance(getTouchDistance(touch1, touch2));
+        setLastTouchCenter(getTouchCenter(touch1, touch2));
+      }
+    };
+    const handleNativeTouchMove = (e: TouchEvent) => {
+      if (!state.selectedImage) return;
+      e.preventDefault();
+      if (e.touches.length === 1 && isDraggingRef.current && !isMultiTouchRef.current) {
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - dragStartRef.current.x;
+        const deltaY = touch.clientY - dragStartRef.current.y;
+        dispatch({
+          type: 'SET_TRANSFORM',
+          payload: {
+            ...state.transform,
+            translateX: state.transform.translateX + deltaX,
+            translateY: state.transform.translateY + deltaY,
+          },
+        });
+        setDragStart({ x: touch.clientX, y: touch.clientY });
+      } else if (e.touches.length === 2 && isMultiTouchRef.current) {
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        const currentDistance = getTouchDistance(touch1, touch2);
+        const currentCenter = getTouchCenter(touch1, touch2);
+        if (lastTouchDistanceRef.current > 0) {
+          const scaleChange = currentDistance / lastTouchDistanceRef.current;
+          const newScale = Math.max(0.1, Math.min(3, state.transform.scale * scaleChange));
+          const panX = currentCenter.x - lastTouchCenterRef.current.x;
+          const panY = currentCenter.y - lastTouchCenterRef.current.y;
+          dispatch({
+            type: 'SET_TRANSFORM',
+            payload: {
+              ...state.transform,
+              scale: newScale,
+              translateX: state.transform.translateX + panX,
+              translateY: state.transform.translateY + panY,
+            },
+          });
+        }
+        setLastTouchDistance(currentDistance);
+        setLastTouchCenter(currentCenter);
+      }
+    };
+    const handleNativeTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length === 0) {
+        setIsDragging(false);
+        setIsMultiTouch(false);
+        setLastTouchDistance(0);
+      } else if (e.touches.length === 1 && isMultiTouchRef.current) {
+        const touch = e.touches[0];
+        setIsMultiTouch(false);
+        setIsDragging(true);
+        setDragStart({ x: touch.clientX, y: touch.clientY });
+        setLastTouchDistance(0);
+      }
+    };
+    // Wheel event
+    const handleNativeWheel = (e: WheelEvent) => {
+      if (!state.selectedImage) return;
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      const newScale = Math.max(0.1, Math.min(3, state.transform.scale + delta));
+      dispatch({
+        type: 'SET_TRANSFORM',
+        payload: {
+          ...state.transform,
+          scale: newScale,
+        },
+      });
+    };
+    canvas.addEventListener('touchstart', handleNativeTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', handleNativeTouchMove, { passive: false });
+    canvas.addEventListener('touchend', handleNativeTouchEnd, { passive: false });
+    canvas.addEventListener('wheel', handleNativeWheel, { passive: false });
+    return () => {
+      canvas.removeEventListener('touchstart', handleNativeTouchStart);
+      canvas.removeEventListener('touchmove', handleNativeTouchMove);
+      canvas.removeEventListener('touchend', handleNativeTouchEnd);
+      canvas.removeEventListener('wheel', handleNativeWheel);
+    };
+  }, [state.selectedImage, state.transform, dispatch]);
+
+  // Remove e.preventDefault() from React synthetic handlers
+  const handleTouchStart = () => {};
+  const handleTouchMove = () => {};
+  const handleTouchEnd = () => {};
+  const handleWheel = () => {};
+
   // Mouse event handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!state.selectedImage) return;
@@ -201,8 +314,14 @@ export function MaskedImage() {
 
   // Enhanced touch event handlers with pinch-to-zoom and multi-touch pan
   const [lastTouchDistance, setLastTouchDistance] = useState<number>(0);
+  const lastTouchDistanceRef = useRef(lastTouchDistance);
+  useEffect(() => { lastTouchDistanceRef.current = lastTouchDistance; }, [lastTouchDistance]);
   const [lastTouchCenter, setLastTouchCenter] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const lastTouchCenterRef = useRef(lastTouchCenter);
+  useEffect(() => { lastTouchCenterRef.current = lastTouchCenter; }, [lastTouchCenter]);
   const [isMultiTouch, setIsMultiTouch] = useState(false);
+  const isMultiTouchRef = useRef(isMultiTouch);
+  useEffect(() => { isMultiTouchRef.current = isMultiTouch; }, [isMultiTouch]);
 
   const getTouchDistance = (touch1: React.Touch, touch2: React.Touch): number => {
     const dx = touch1.clientX - touch2.clientX;
@@ -215,99 +334,6 @@ export function MaskedImage() {
       x: (touch1.clientX + touch2.clientX) / 2,
       y: (touch1.clientY + touch2.clientY) / 2,
     };
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (!state.selectedImage) return;
-    
-    e.preventDefault();
-    
-    if (e.touches.length === 1) {
-      // Single touch - pan gesture
-    const touch = e.touches[0];
-    setIsDragging(true);
-      setIsMultiTouch(false);
-    setDragStart({ x: touch.clientX, y: touch.clientY });
-    } else if (e.touches.length === 2) {
-      // Two finger touch - pinch/zoom gesture
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      
-      setIsDragging(false);
-      setIsMultiTouch(true);
-      setLastTouchDistance(getTouchDistance(touch1, touch2));
-      setLastTouchCenter(getTouchCenter(touch1, touch2));
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!state.selectedImage) return;
-    
-    e.preventDefault();
-
-    if (e.touches.length === 1 && isDragging && !isMultiTouch) {
-      // Single touch pan
-    const touch = e.touches[0];
-    const deltaX = touch.clientX - dragStart.x;
-    const deltaY = touch.clientY - dragStart.y;
-
-    dispatch({
-      type: 'SET_TRANSFORM',
-      payload: {
-        ...state.transform,
-          translateX: state.transform.translateX + deltaX,
-          translateY: state.transform.translateY + deltaY,
-      },
-    });
-
-    setDragStart({ x: touch.clientX, y: touch.clientY });
-    } else if (e.touches.length === 2 && isMultiTouch) {
-      // Two finger pinch/zoom and pan
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-
-      const currentDistance = getTouchDistance(touch1, touch2);
-      const currentCenter = getTouchCenter(touch1, touch2);
-      
-      // Handle pinch-to-zoom
-      if (lastTouchDistance > 0) {
-        const scaleChange = currentDistance / lastTouchDistance;
-        const newScale = Math.max(0.1, Math.min(3, state.transform.scale * scaleChange));
-        
-        // Handle two-finger pan
-        const panX = currentCenter.x - lastTouchCenter.x;
-        const panY = currentCenter.y - lastTouchCenter.y;
-        
-        dispatch({
-          type: 'SET_TRANSFORM',
-          payload: {
-            ...state.transform,
-            scale: newScale,
-            translateX: state.transform.translateX + panX,
-            translateY: state.transform.translateY + panY,
-          },
-        });
-      }
-      
-      setLastTouchDistance(currentDistance);
-      setLastTouchCenter(currentCenter);
-    }
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (e.touches.length === 0) {
-      // All touches ended
-    setIsDragging(false);
-      setIsMultiTouch(false);
-      setLastTouchDistance(0);
-    } else if (e.touches.length === 1 && isMultiTouch) {
-      // Switched from multi-touch to single touch
-      const touch = e.touches[0];
-      setIsMultiTouch(false);
-      setIsDragging(true);
-      setDragStart({ x: touch.clientX, y: touch.clientY });
-      setLastTouchDistance(0);
-    }
   };
 
   // Full-screen drop handlers for image upload
@@ -345,22 +371,6 @@ export function MaskedImage() {
     if (file) {
       handleFileSelect(file);
     }
-  };
-
-  const handleWheel = (e: React.WheelEvent) => {
-    if (!state.selectedImage) return;
-
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? -0.1 : 0.1;
-    const newScale = Math.max(0.1, Math.min(3, state.transform.scale + delta));
-
-    dispatch({
-      type: 'SET_TRANSFORM',
-      payload: {
-        ...state.transform,
-        scale: newScale,
-      },
-    });
   };
 
   return (

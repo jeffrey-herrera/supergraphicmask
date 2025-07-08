@@ -27,7 +27,7 @@ export function MaskSelector() {
   return (
     <div className={`space-y-4 animate-slide-in-up ${isDisabled ? 'opacity-50' : ''}`}>
       <h3 className="text-sm font-medium">
-        Select Mask {isDisabled && '(Upload an image first)'}
+        Choose a Shape {isDisabled && <span className="text-[10px] font-normal block">(Upload an image to unlock mask options)</span>}
       </h3>
       <div className="grid grid-cols-2 gap-3">
         {masks.map((mask, index) => {

@@ -147,7 +147,7 @@ export function CenterDropZone() {
           }
           ${isProcessing ? 'cursor-not-allowed' : 'cursor-pointer'}
           backdrop-blur-sm border-2 border-solid rounded-2xl
-          px-12 py-16 text-center max-w-md animate-bounce-in
+          px-12 py-16 text-center max-w-md
         `}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -174,12 +174,12 @@ export function CenterDropZone() {
            isDragging ? 'Drop your image here' : 'Drag and drop an image'}
         </h3>
         
-        <p className="text-sm text-muted-foreground mb-4">
+        <p className="text-sm text-muted-foreground mb-4 [text-wrap:balance]">
           {isProcessing ? 'Optimizing for better performance' :
            isDragging ? 'Release to upload' : 'or click to browse files'}
         </p>
         
-        <div className="text-xs text-muted-foreground/60">
+        <div className="text-xs text-muted-foreground/60 [text-wrap:balance]">
           {isProcessing ? 'Please wait...' : 'Supports JPG, PNG, GIF, and more'}
         </div>
 

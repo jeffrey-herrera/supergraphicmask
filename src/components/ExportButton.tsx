@@ -155,14 +155,17 @@ export function ExportButton() {
   };
 
   const isDisabled = !state.selectedImage || !state.selectedMask || isExporting;
+  const isExportSizeDisabled = !state.selectedImage;
 
   return (
     <div className="space-y-4">
-      <div className="space-y-3">
+      <div className="space-y-8">
         {/* Size Selector */}
-        <div className="space-y-2">
-        <h3 className="text-sm font-medium">Export Size</h3>
-          <div className="grid grid-cols-3 gap-1">
+        <div className={`space-y-2 ${isExportSizeDisabled ? 'opacity-50' : ''}`}>
+          <h3 className="text-sm font-medium">
+            Select Output Size {isDisabled && <span className="text-[10px] font-normal block">(Upload an image to unlock mask options)</span>}
+          </h3>
+          <div className="grid grid-cols-3 gap-2">
             {EXPORT_SIZES.map((size) => (
               <button
                 key={size.value}
@@ -208,8 +211,8 @@ export function ExportButton() {
         </button>
         
         {isDisabled && !isExporting && (
-          <p className="text-xs text-muted-foreground text-center">
-            Select an image and mask to export
+          <p className="text-xs text-muted-foreground text-center [text-wrap:balance]">
+            Add an image and shape to export
           </p>
         )}
       </div>

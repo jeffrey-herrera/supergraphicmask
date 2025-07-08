@@ -51,11 +51,11 @@ export function BottomControls() {
   };
 
   const handleFill = () => {
-    // Fill: Scale up image to fill the entire mask area
+    // Fill: Reset transform to default fill (scale 1, centered)
     dispatch({
       type: 'SET_TRANSFORM',
       payload: {
-        scale: 1.8,
+        scale: 1,
         translateX: 0,
         translateY: 0,
       },
@@ -75,6 +75,8 @@ export function BottomControls() {
   };
 
   const isDisabled = !state.selectedImage || !state.selectedMask;
+  const isContainActive = state.transform.scale < 1 && state.transform.translateX === 0 && state.transform.translateY === 0;
+  const isFillActive = state.transform.scale === 1 && state.transform.translateX === 0 && state.transform.translateY === 0;
 
   return (
     <div className="fixed left-1/2 transform -translate-x-1/2 z-30 max-w-[calc(100vw-48px)] max-w-4xl" style={{ bottom: '48px' }}>
@@ -148,6 +150,7 @@ export function BottomControls() {
               size="sm"
               onClick={handleContain}
               disabled={isDisabled}
+              className={isContainActive ? 'border-primary' : ''}
             >
               <Minimize2 className="w-4 h-4 sm:mr-2" />
               <span className="hidden sm:inline">Contain</span>
@@ -158,6 +161,7 @@ export function BottomControls() {
               size="sm"
               onClick={handleFill}
               disabled={isDisabled}
+              className={isFillActive ? 'border-primary' : ''}
             >
               <Maximize2 className="w-4 h-4 sm:mr-2" />
               <span className="hidden sm:inline">Fill</span>
