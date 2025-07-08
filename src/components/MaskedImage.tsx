@@ -10,16 +10,28 @@ export function MaskedImage() {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [maskImage, setMaskImage] = useState<HTMLImageElement | null>(null);
   const [sourceImage, setSourceImage] = useState<HTMLImageElement | null>(null);
+  const [canvasSize, setCanvasSize] = useState({ width: 800, height: 600 });
 
   const selectedMask = state.selectedMask ? getMaskById(state.selectedMask) : null;
 
+  // Update canvas size
+  useEffect(() => {
+    const updateSize = () => {
+      const width = window.innerWidth - 400; // Account for sidebar
+      const height = window.innerHeight - 100; // Account for controls
+      setCanvasSize({ 
+        width: Math.max(width, 400), 
+        height: Math.max(height, 300) 
+      });
+    };
+    
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
   // Load mask image when selectedMask changes
   useEffect(() => {
-    if (state.selectedMask && !selectedMask) {
-      dispatch({ type: 'SET_MASK', payload: null });
-      return;
-    }
-
     if (selectedMask) {
       const img = new Image();
       img.crossOrigin = 'anonymous';
@@ -28,13 +40,13 @@ export function MaskedImage() {
       };
       img.onerror = (error) => {
         console.error('Error loading mask image:', error);
-        dispatch({ type: 'SET_MASK', payload: null });
+        setMaskImage(null);
       };
       img.src = selectedMask.path;
     } else {
       setMaskImage(null);
     }
-  }, [selectedMask, state.selectedMask, dispatch]);
+  }, [selectedMask]);
 
   // Load source image when selectedImage changes
   useEffect(() => {
@@ -46,6 +58,7 @@ export function MaskedImage() {
       };
       img.onerror = (error) => {
         console.error('Error loading source image:', error);
+        setSourceImage(null);
       };
       img.src = state.selectedImage;
     } else {
@@ -53,93 +66,100 @@ export function MaskedImage() {
     }
   }, [state.selectedImage]);
 
-  // Canvas drawing function
+  // Canvas drawing function - SIMPLIFIED AND ROBUST
   const drawCanvas = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !sourceImage || !maskImage) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const ctx = canvas?.getContext('2d');
+    
+    if (!canvas || !ctx || !sourceImage || !maskImage) {
+      return;
+    }
 
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Save context state
-    ctx.save();
-
-    // First, draw the source image with transforms applied
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.scale(state.transform.scale, state.transform.scale);
-    ctx.translate(state.transform.translateX, state.transform.translateY);
-
-    // Calculate image dimensions to fit canvas while maintaining aspect ratio
-    const canvasAspect = canvas.width / canvas.height;
-    const imageAspect = sourceImage.width / sourceImage.height;
+    // Calculate mask display size with 2% margin
+    const margin = 0.02;
+    const availableWidth = canvas.width * (1 - margin * 2);
+    const availableHeight = canvas.height * (1 - margin * 2);
     
-    let drawWidth, drawHeight;
-    if (imageAspect > canvasAspect) {
-      // Image is wider, fit by height
-      drawHeight = canvas.height;
-      drawWidth = drawHeight * imageAspect;
+    // Calculate mask size to fit in available space while maintaining aspect ratio
+    const maskAspect = maskImage.width / maskImage.height;
+    const availableAspect = availableWidth / availableHeight;
+    
+    let maskDisplayWidth, maskDisplayHeight;
+    if (maskAspect > availableAspect) {
+      // Mask is wider - fit by width
+      maskDisplayWidth = availableWidth;
+      maskDisplayHeight = availableWidth / maskAspect;
     } else {
-      // Image is taller, fit by width
-      drawWidth = canvas.width;
-      drawHeight = drawWidth / imageAspect;
+      // Mask is taller - fit by height
+      maskDisplayHeight = availableHeight;
+      maskDisplayWidth = availableHeight * maskAspect;
     }
+    
+    // Center the mask on canvas
+    const maskX = (canvas.width - maskDisplayWidth) / 2;
+    const maskY = (canvas.height - maskDisplayHeight) / 2;
 
-    // Draw the source image (with transforms applied)
+    // Calculate image size and position within mask bounds
+    const { scale, translateX, translateY } = state.transform;
+    
+    // Make image fill mask bounds by default (like CSS object-fit: cover)
+    const imageAspect = sourceImage.width / sourceImage.height;
+    let baseImageWidth, baseImageHeight;
+    
+    if (imageAspect > maskAspect) {
+      // Image is wider - fit by height to fill mask
+      baseImageHeight = maskDisplayHeight;
+      baseImageWidth = baseImageHeight * imageAspect;
+    } else {
+      // Image is taller - fit by width to fill mask
+      baseImageWidth = maskDisplayWidth;
+      baseImageHeight = baseImageWidth / imageAspect;
+    }
+    
+    // Apply user scale
+    const finalImageWidth = baseImageWidth * scale;
+    const finalImageHeight = baseImageHeight * scale;
+    
+    // Apply user translation (relative to mask center)
+    const imageCenterX = maskX + maskDisplayWidth / 2 + translateX;
+    const imageCenterY = maskY + maskDisplayHeight / 2 + translateY;
+    
+    const imageX = imageCenterX - finalImageWidth / 2;
+    const imageY = imageCenterY - finalImageHeight / 2;
+
+    // Draw the image first
     ctx.drawImage(
       sourceImage,
-      -drawWidth / 2,
-      -drawHeight / 2,
-      drawWidth,
-      drawHeight
+      imageX,
+      imageY,
+      finalImageWidth,
+      finalImageHeight
     );
 
-    // Restore context state to remove transforms
-    ctx.restore();
-
-    // Set composite operation to use mask
+    // Apply mask using composite operation
     ctx.globalCompositeOperation = 'destination-in';
-
-    // Save context state for mask drawing
-    ctx.save();
-    
-    // Center the mask without any transforms
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-
-    // Calculate mask dimensions to maintain its aspect ratio
-    const maskAspect = maskImage.width / maskImage.height;
-    let maskWidth, maskHeight;
-    
-    if (maskAspect > canvasAspect) {
-      // Mask is wider, fit by height
-      maskHeight = canvas.height;
-      maskWidth = maskHeight * maskAspect;
-    } else {
-      // Mask is taller, fit by width
-      maskWidth = canvas.width;
-      maskHeight = maskWidth / maskAspect;
-    }
-
-    // Draw the mask maintaining its proportions (no transforms)
     ctx.drawImage(
       maskImage,
-      -maskWidth / 2,
-      -maskHeight / 2,
-      maskWidth,
-      maskHeight
+      maskX,
+      maskY,
+      maskDisplayWidth,
+      maskDisplayHeight
     );
 
-    // Restore context state
-    ctx.restore();
-  }, [sourceImage, maskImage, state.transform]);
+    // Reset composite operation
+    ctx.globalCompositeOperation = 'source-over';
 
-  // Redraw canvas when images or transform changes
+  }, [sourceImage, maskImage, state.transform, canvasSize]);
+
+  // Redraw canvas when dependencies change
   useEffect(() => {
     drawCanvas();
   }, [drawCanvas]);
 
+  // Mouse event handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!state.selectedImage) return;
     
@@ -157,8 +177,8 @@ export function MaskedImage() {
       type: 'SET_TRANSFORM',
       payload: {
         ...state.transform,
-        translateX: state.transform.translateX + deltaX * 0.5,
-        translateY: state.transform.translateY + deltaY * 0.5,
+        translateX: state.transform.translateX + deltaX,
+        translateY: state.transform.translateY + deltaY,
       },
     });
 
@@ -189,8 +209,8 @@ export function MaskedImage() {
       type: 'SET_TRANSFORM',
       payload: {
         ...state.transform,
-        translateX: state.transform.translateX + deltaX * 0.5,
-        translateY: state.transform.translateY + deltaY * 0.5,
+        translateX: state.transform.translateX + deltaX,
+        translateY: state.transform.translateY + deltaY,
       },
     });
 
@@ -223,7 +243,6 @@ export function MaskedImage() {
 
   const handleScreenDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
-    // Only set dragging to false if we're leaving the main container
     if (e.currentTarget === e.target) {
       dispatch({ type: 'SET_DRAGGING', payload: false });
     }
@@ -254,21 +273,6 @@ export function MaskedImage() {
       },
     });
   };
-
-  const [canvasSize, setCanvasSize] = useState({ width: 800, height: 600 });
-
-  useEffect(() => {
-    const updateSize = () => {
-      // Use full screen minus some padding for sidebar/controls
-      const width = window.innerWidth - 400; // Account for sidebar
-      const height = window.innerHeight - 100; // Account for bottom controls
-      setCanvasSize({ width: Math.max(width, 400), height: Math.max(height, 300) });
-    };
-    
-    updateSize();
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
-  }, []);
 
   return (
     <div 
