@@ -1,24 +1,95 @@
 import { useRef, useState } from 'react';
 import { useAppState } from '@/lib/store';
-import { Upload } from 'lucide-react';
+import { Upload, Loader2 } from 'lucide-react';
+
+// Image optimization settings (same as ImageUploader)
+const MAX_IMAGE_SIZE = 2000; // Maximum width/height in pixels
+const JPEG_QUALITY = 0.85; // Quality for JPEG compression
 
 export function CenterDropZone() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const { state, dispatch } = useAppState();
 
-  const handleFileSelect = (file: File) => {
+  const optimizeImage = async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      if (!ctx) {
+        reject(new Error('Canvas context not available'));
+        return;
+      }
+
+      img.onload = () => {
+        try {
+          // Calculate new dimensions while maintaining aspect ratio
+          let { width, height } = img;
+          
+          if (width > MAX_IMAGE_SIZE || height > MAX_IMAGE_SIZE) {
+            const aspectRatio = width / height;
+            
+            if (width > height) {
+              width = MAX_IMAGE_SIZE;
+              height = width / aspectRatio;
+            } else {
+              height = MAX_IMAGE_SIZE;
+              width = height * aspectRatio;
+            }
+          }
+
+          // Set canvas dimensions
+          canvas.width = width;
+          canvas.height = height;
+
+          // Draw and compress the image
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Convert to optimized format
+          const mimeType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+          const quality = mimeType === 'image/jpeg' ? JPEG_QUALITY : undefined;
+          
+          const optimizedDataUrl = canvas.toDataURL(mimeType, quality);
+          resolve(optimizedDataUrl);
+        } catch (error) {
+          reject(error);
+        }
+      };
+
+      img.onerror = () => {
+        reject(new Error('Failed to load image'));
+      };
+
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  const handleFileSelect = async (file: File) => {
     if (!file.type.startsWith('image/')) {
       alert('Please select an image file');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result as string;
-      dispatch({ type: 'SET_IMAGE', payload: result });
-    };
-    reader.readAsDataURL(file);
+    // Check file size (warn if over 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      if (!confirm('This image is quite large. It will be optimized for better performance. Continue?')) {
+        return;
+      }
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const optimizedImageUrl = await optimizeImage(file);
+      dispatch({ type: 'SET_IMAGE', payload: optimizedImageUrl });
+    } catch (error) {
+      console.error('Image optimization failed:', error);
+      alert('Failed to process image. Please try a different file.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +123,9 @@ export function CenterDropZone() {
   };
 
   const handleClick = () => {
-    fileInputRef.current?.click();
+    if (!isProcessing) {
+      fileInputRef.current?.click();
+    }
   };
 
   // Only show if no image is selected
@@ -64,12 +137,12 @@ export function CenterDropZone() {
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
       <div
         className={`
-          pointer-events-auto cursor-pointer
-          transition-all duration-200 ease-in-out
+          pointer-events-auto transition-all duration-200 ease-in-out
           ${isDragging 
             ? 'scale-105 bg-primary/5 border-primary/50' 
             : 'bg-background/60 border-border/50 hover:bg-background/80 hover:border-border/80'
           }
+          ${isProcessing ? 'cursor-not-allowed' : 'cursor-pointer'}
           backdrop-blur-sm border-2 border-dashed rounded-2xl
           px-12 py-16 text-center max-w-md
         `}
@@ -83,22 +156,28 @@ export function CenterDropZone() {
           transition-colors duration-200
           ${isDragging ? 'bg-primary/20' : 'bg-muted/50'}
         `}>
-          <Upload className={`
-            w-8 h-8 transition-colors duration-200
-            ${isDragging ? 'text-primary' : 'text-muted-foreground'}
-          `} />
+          {isProcessing ? (
+            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+          ) : (
+            <Upload className={`
+              w-8 h-8 transition-colors duration-200
+              ${isDragging ? 'text-primary' : 'text-muted-foreground'}
+            `} />
+          )}
         </div>
         
         <h3 className="text-lg font-semibold mb-2">
-          {isDragging ? 'Drop your image here' : 'Drag and drop an image'}
+          {isProcessing ? 'Processing image...' : 
+           isDragging ? 'Drop your image here' : 'Drag and drop an image'}
         </h3>
         
         <p className="text-sm text-muted-foreground mb-4">
-          {isDragging ? 'Release to upload' : 'or click to browse files'}
+          {isProcessing ? 'Optimizing for better performance' :
+           isDragging ? 'Release to upload' : 'or click to browse files'}
         </p>
         
         <div className="text-xs text-muted-foreground/60">
-          Supports JPG, PNG, GIF, and more
+          {isProcessing ? 'Please wait...' : 'Supports JPG, PNG, GIF, and more'}
         </div>
 
         <input
@@ -107,6 +186,7 @@ export function CenterDropZone() {
           accept="image/*"
           className="hidden"
           onChange={handleFileInput}
+          disabled={isProcessing}
         />
       </div>
     </div>
