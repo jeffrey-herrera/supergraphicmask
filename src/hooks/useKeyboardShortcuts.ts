@@ -108,6 +108,20 @@ export function useKeyboardShortcuts() {
         return;
       }
 
+      // Undo (Ctrl+Z)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        dispatch({ type: 'UNDO' });
+        return;
+      }
+
+      // Redo (Ctrl+Y or Ctrl+Shift+Z)
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+        e.preventDefault();
+        dispatch({ type: 'REDO' });
+        return;
+      }
+
       // Export (E key)
       if (e.key === 'e' || e.key === 'E') {
         e.preventDefault();

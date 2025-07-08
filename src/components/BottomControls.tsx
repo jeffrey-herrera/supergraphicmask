@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { useAppState } from '@/lib/store';
-import { RotateCcw, ZoomIn, ZoomOut, Maximize2, Minimize2 } from 'lucide-react';
+import { RotateCcw, ZoomIn, ZoomOut, Maximize2, Minimize2, Undo, Redo } from 'lucide-react';
 
 export function BottomControls() {
   const { state, dispatch } = useAppState();
@@ -40,6 +40,14 @@ export function BottomControls() {
 
   const handleReset = () => {
     dispatch({ type: 'RESET_TRANSFORM' });
+  };
+
+  const handleUndo = () => {
+    dispatch({ type: 'UNDO' });
+  };
+
+  const handleRedo = () => {
+    dispatch({ type: 'REDO' });
   };
 
   const handleFill = () => {
@@ -111,6 +119,30 @@ export function BottomControls() {
 
           {/* Action buttons */}
           <div className="flex items-center gap-2 w-full sm:w-auto justify-center">
+            {/* Undo/Redo buttons */}
+            <div className="flex items-center gap-1 border-r border-border/30 pr-2 mr-1">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleUndo}
+                disabled={isDisabled || !state.canUndo}
+                title="Undo (Ctrl+Z)"
+              >
+                <Undo className="w-4 h-4" />
+              </Button>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRedo}
+                disabled={isDisabled || !state.canRedo}
+                title="Redo (Ctrl+Y)"
+              >
+                <Redo className="w-4 h-4" />
+              </Button>
+            </div>
+
+            {/* Transform buttons */}
             <Button
               variant="outline"
               size="sm"
