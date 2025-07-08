@@ -134,7 +134,7 @@ export function ImageUploader() {
   const isDisabled = isProcessing;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 animate-slide-in-up">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-medium">Upload Image</h3>
         {state.selectedImage && !isProcessing && (
@@ -142,7 +142,7 @@ export function ImageUploader() {
             variant="ghost"
             size="sm"
             onClick={handleRemoveImage}
-            className="text-destructive hover:text-destructive h-6 px-2"
+            className="text-destructive hover:text-destructive h-6 px-2 smooth-transition hover-lift"
           >
             <X className="w-3 h-3 mr-1" />
             Remove
@@ -152,9 +152,9 @@ export function ImageUploader() {
 
       {!state.selectedImage ? (
         <div
-          className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+          className={`border-2 border-dashed rounded-lg p-6 text-center smooth-transition hover-lift ${
             isDragging
-              ? 'border-primary bg-primary/5'
+              ? 'border-primary bg-primary/5 scale-105 animate-pulse-glow'
               : 'border-muted-foreground/25 hover:border-muted-foreground/50'
           } ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
           onDragOver={handleDragOver}
@@ -164,14 +164,14 @@ export function ImageUploader() {
           {isProcessing ? (
             <>
               <Loader2 className="w-8 h-8 mx-auto mb-3 text-primary animate-spin" />
-              <p className="text-sm font-medium text-primary mb-2">Processing image...</p>
+              <p className="text-sm font-medium text-primary mb-2 animate-shimmer">Processing image...</p>
               <p className="text-xs text-muted-foreground">
                 Optimizing for better performance
               </p>
             </>
           ) : (
             <>
-          <ImageIcon className="w-8 h-8 mx-auto mb-3 text-muted-foreground" />
+          <ImageIcon className="w-8 h-8 mx-auto mb-3 text-muted-foreground animate-bounce-in" />
           <p className="text-xs text-muted-foreground mb-3">
             Drag and drop an image here, or click to select
           </p>
@@ -179,6 +179,7 @@ export function ImageUploader() {
                 size="sm" 
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isDisabled}
+                className="smooth-transition hover-lift"
               >
             <Upload className="w-3 h-3 mr-2" />
             Select Image
@@ -198,12 +199,12 @@ export function ImageUploader() {
           />
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 animate-image-load">
           <div className="relative">
             <img
               src={state.selectedImage}
               alt="Selected image"
-              className="w-full h-24 object-cover rounded-lg"
+              className="w-full h-24 object-cover rounded-lg smooth-transition hover-lift"
             />
           </div>
           <div className="flex gap-2">
@@ -211,7 +212,7 @@ export function ImageUploader() {
               variant="outline"
               size="sm"
               onClick={() => fileInputRef.current?.click()}
-              className="flex-1"
+              className="flex-1 smooth-transition hover-lift"
               disabled={isDisabled}
             >
               {isProcessing ? (

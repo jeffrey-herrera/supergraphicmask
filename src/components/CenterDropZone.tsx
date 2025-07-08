@@ -140,14 +140,14 @@ export function CenterDropZone() {
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
       <div
         className={`
-          pointer-events-auto transition-all duration-200 ease-in-out
+          pointer-events-auto smooth-transition hover-lift
           ${isDragging 
-            ? 'scale-105 bg-primary/5 border-primary/50' 
+            ? 'scale-105 bg-primary/5 border-primary/50 animate-pulse-glow' 
             : 'bg-background/60 border-border/50 hover:bg-background/80 hover:border-border/80'
           }
           ${isProcessing ? 'cursor-not-allowed' : 'cursor-pointer'}
           backdrop-blur-sm border-2 border-dashed rounded-2xl
-          px-12 py-16 text-center max-w-md
+          px-12 py-16 text-center max-w-md animate-bounce-in
         `}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -156,20 +156,20 @@ export function CenterDropZone() {
       >
         <div className={`
           w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center
-          transition-colors duration-200
-          ${isDragging ? 'bg-primary/20' : 'bg-muted/50'}
+          smooth-transition
+          ${isDragging ? 'bg-primary/20 animate-pulse-glow' : 'bg-muted/50'}
         `}>
           {isProcessing ? (
             <Loader2 className="w-8 h-8 text-primary animate-spin" />
           ) : (
           <Upload className={`
-            w-8 h-8 transition-colors duration-200
-            ${isDragging ? 'text-primary' : 'text-muted-foreground'}
+            w-8 h-8 smooth-transition
+            ${isDragging ? 'text-primary animate-bounce-in' : 'text-muted-foreground'}
           `} />
           )}
         </div>
         
-        <h3 className="text-lg font-semibold mb-2">
+        <h3 className="text-lg font-semibold mb-2 animate-shimmer">
           {isProcessing ? 'Processing image...' : 
            isDragging ? 'Drop your image here' : 'Drag and drop an image'}
         </h3>

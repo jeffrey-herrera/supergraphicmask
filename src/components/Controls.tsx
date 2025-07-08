@@ -46,9 +46,9 @@ export function Controls() {
   const isDisabled = !state.selectedImage || !state.selectedMask;
 
   return (
-    <Card className="p-6">
+    <Card className="p-6 animate-slide-in-up">
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Controls</h2>
+        <h2 className="text-sm font-medium">Controls</h2>
         
         <div className="space-y-4">
           <div className="space-y-2">
@@ -59,6 +59,7 @@ export function Controls() {
                 size="sm"
                 onClick={handleZoomOut}
                 disabled={isDisabled}
+                className="smooth-transition hover-lift"
               >
                 <ZoomOut className="w-4 h-4" />
               </Button>
@@ -78,18 +79,19 @@ export function Controls() {
                 size="sm"
                 onClick={handleZoomIn}
                 disabled={isDisabled}
+                className="smooth-transition hover-lift"
               >
                 <ZoomIn className="w-4 h-4" />
               </Button>
             </div>
-            <div className="text-xs text-muted-foreground text-center">
+            <div className="text-xs text-muted-foreground text-center animate-shimmer">
               {Math.round(state.transform.scale * 100)}%
             </div>
           </div>
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Position</label>
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-muted-foreground animate-shimmer">
               X: {Math.round(state.transform.translateX)} • Y: {Math.round(state.transform.translateY)}
             </div>
           </div>
@@ -98,7 +100,7 @@ export function Controls() {
             variant="outline"
             onClick={handleReset}
             disabled={isDisabled}
-            className="w-full"
+            className="w-full smooth-transition hover-lift"
           >
             <RotateCcw className="w-4 h-4 mr-2" />
             Reset Position

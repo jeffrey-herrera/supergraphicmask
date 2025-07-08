@@ -11,6 +11,8 @@ export function MaskedImage() {
   const [maskImage, setMaskImage] = useState<HTMLImageElement | null>(null);
   const [sourceImage, setSourceImage] = useState<HTMLImageElement | null>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 800, height: 600 });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMaskLoading, setIsMaskLoading] = useState(false);
 
   const selectedMask = state.selectedMask ? getMaskById(state.selectedMask) : null;
 
@@ -33,36 +35,44 @@ export function MaskedImage() {
   // Load mask image when selectedMask changes
   useEffect(() => {
     if (selectedMask) {
+      setIsMaskLoading(true);
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => {
         setMaskImage(img);
+        setIsMaskLoading(false);
       };
       img.onerror = (error) => {
         console.error('Error loading mask image:', error);
         setMaskImage(null);
+        setIsMaskLoading(false);
       };
       img.src = selectedMask.path;
     } else {
       setMaskImage(null);
+      setIsMaskLoading(false);
     }
   }, [selectedMask]);
 
   // Load source image when selectedImage changes
   useEffect(() => {
     if (state.selectedImage) {
+      setIsLoading(true);
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => {
         setSourceImage(img);
+        setIsLoading(false);
       };
       img.onerror = (error) => {
         console.error('Error loading source image:', error);
         setSourceImage(null);
+        setIsLoading(false);
       };
       img.src = state.selectedImage;
     } else {
       setSourceImage(null);
+      setIsLoading(false);
     }
   }, [state.selectedImage]);
 
@@ -389,7 +399,7 @@ export function MaskedImage() {
               ref={canvasRef}
               width={canvasSize.width}
               height={canvasSize.height}
-              className="cursor-move touch-none"
+              className="cursor-move touch-none animate-image-load"
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
@@ -399,10 +409,21 @@ export function MaskedImage() {
               onTouchEnd={handleTouchEnd}
               onWheel={handleWheel}
             />
-          ) : !selectedMask ? (
-            <div className="w-full h-full flex items-center justify-center text-muted-foreground/60 rounded-lg">
+          ) : !state.selectedImage ? (
+            <div className="w-full h-full flex items-center justify-center text-muted-foreground/60 rounded-lg animate-slide-in-up">
               <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center animate-bounce-in">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                  </svg>
+                </div>
+                <p className="text-sm">Upload an image to get started</p>
+              </div>
+            </div>
+          ) : !selectedMask ? (
+            <div className="w-full h-full flex items-center justify-center text-muted-foreground/60 rounded-lg animate-slide-in-up">
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center animate-bounce-in">
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z" />
                   </svg>
@@ -410,15 +431,28 @@ export function MaskedImage() {
                 <p className="text-sm">Select a mask to preview</p>
               </div>
             </div>
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-muted-foreground/60 rounded-lg">
+          ) : isLoading || isMaskLoading ? (
+            <div className="w-full h-full flex items-center justify-center text-muted-foreground/60 rounded-lg animate-slide-in-up">
               <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center animate-pulse-glow">
                   <svg className="w-8 h-8 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
                 </div>
-                <p className="text-sm">Loading mask...</p>
+                <p className="text-sm animate-shimmer">
+                  {isLoading ? 'Loading image...' : 'Loading mask...'}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-muted-foreground/60 rounded-lg animate-slide-in-up">
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center animate-bounce-in">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                  </svg>
+                </div>
+                <p className="text-sm">Something went wrong</p>
               </div>
             </div>
           )}
