@@ -2,6 +2,7 @@ import { Card } from '@/components/ui/card';
 import { useAppState } from '@/lib/store';
 import { masks } from '@/data/masks.tsx';
 import { cn } from '@/lib/utils';
+import { useEffect } from 'react';
 
 const INACTIVE_COLOR = '#C9C4FF';
 const ACTIVE_COLOR = '#801ED7';
@@ -9,13 +10,25 @@ const ACTIVE_COLOR = '#801ED7';
 export function MaskSelector() {
   const { state, dispatch } = useAppState();
 
+  // Auto-select first mask when image is uploaded
+  useEffect(() => {
+    if (state.selectedImage && !state.selectedMask && masks.length > 0) {
+      dispatch({ type: 'SET_MASK', payload: masks[0].id });
+    }
+  }, [state.selectedImage, state.selectedMask, dispatch]);
+
   const handleMaskSelect = (maskId: string) => {
+    if (!state.selectedImage) return; // Prevent selection if no image
     dispatch({ type: 'SET_MASK', payload: maskId });
   };
 
+  const isDisabled = !state.selectedImage;
+
   return (
-    <div className="space-y-4 animate-slide-in-up">
-      <h3 className="text-sm font-medium">Select Mask</h3>
+    <div className={`space-y-4 animate-slide-in-up ${isDisabled ? 'opacity-50' : ''}`}>
+      <h3 className="text-sm font-medium">
+        Select Mask {isDisabled && '(Upload an image first)'}
+      </h3>
       <div className="grid grid-cols-2 gap-3">
         {masks.map((mask, index) => {
           const isActive = state.selectedMask === mask.id;
@@ -23,12 +36,15 @@ export function MaskSelector() {
             <button
               key={mask.id}
               onClick={() => handleMaskSelect(mask.id)}
+              disabled={isDisabled}
               className={cn(
-                "relative p-4 rounded-lg border-2 smooth-transition hover-lift",
+                "relative p-4 rounded-lg border-2 smooth-transition",
                 "animate-slide-in-up",
-                isActive
-                  ? "border-primary bg-primary/5 scale-105 animate-pulse-glow"
-                  : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/5"
+                isDisabled 
+                  ? "border-muted-foreground/25 bg-muted/20 cursor-not-allowed opacity-50"
+                  : isActive
+                    ? "border-primary bg-primary/5 scale-105 animate-pulse-glow hover-lift"
+                    : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/5 hover-lift"
               )}
               style={{
                 animationDelay: `${index * 50}ms`,

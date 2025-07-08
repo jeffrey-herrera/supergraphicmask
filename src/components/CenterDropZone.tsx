@@ -143,10 +143,10 @@ export function CenterDropZone() {
           pointer-events-auto smooth-transition hover-lift
           ${isDragging 
             ? 'scale-105 bg-primary/5 border-primary/50 animate-pulse-glow' 
-            : 'bg-background/60 border-border/50 hover:bg-background/80 hover:border-border/80'
+            : 'bg-background/60 border-border/50 hover:bg-background/80 hover:border-border/80 animate-border-pulse'
           }
           ${isProcessing ? 'cursor-not-allowed' : 'cursor-pointer'}
-          backdrop-blur-sm border-2 border-dashed rounded-2xl
+          backdrop-blur-sm border-2 border-solid rounded-2xl
           px-12 py-16 text-center max-w-md animate-bounce-in
         `}
         onDragOver={handleDragOver}
@@ -169,7 +169,7 @@ export function CenterDropZone() {
           )}
         </div>
         
-        <h3 className="text-lg font-semibold mb-2 animate-shimmer">
+        <h3 className="text-lg font-semibold mb-2">
           {isProcessing ? 'Processing image...' : 
            isDragging ? 'Drop your image here' : 'Drag and drop an image'}
         </h3>
