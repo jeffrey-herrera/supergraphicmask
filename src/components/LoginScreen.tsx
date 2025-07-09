@@ -61,7 +61,7 @@ export function LoginScreen() {
         <div className="mb-8">
           <div className="flex-col text-center gap-2 mb-6">
             <img src="/Braze_Primary_logo_PURPLE.svg" alt="Braze Logo" className="w-16 mx-auto" />
-            <h1 className="text-3xl font-bold text-gray-900">SuperMask</h1>
+            <h1 className="text-4xl font-bold text-gray-900">SuperMask</h1>
           </div>
           <p className="text-gray-600 mb-2">
             Sign in with your <span className="text-purple-600 font-medium">@braze.com</span> email
@@ -77,9 +77,8 @@ export function LoginScreen() {
         </div>
 
         {/* Footer Text */}
-        <div className="text-xs text-gray-500 space-y-1">
-          <p>Secure authentication via Google OAuth.</p>
-          <p>Only Braze team members can access this system.</p>
+        <div className="text-xs text-gray-300">
+          <p>Secure authentication via Google OAuth.<br/>Only Braze team members can access this system.</p>
         </div>
       </div>
     </div>
