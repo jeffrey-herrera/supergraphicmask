@@ -21,14 +21,7 @@ export function LoginScreen() {
 
     script.onload = () => {
       if (window.google && googleButtonRef.current) {
-        const envClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID;
-        const fallbackClientId = '904580882877-uo48gf4dq08kkdmvajrgiasg931abamq.apps.googleusercontent.com';
-        const clientId = envClientId || fallbackClientId;
-        
-        // Debug: Check which CLIENT_ID is being used
-        console.log('Environment variable CLIENT_ID:', envClientId);
-        console.log('Using CLIENT_ID:', clientId);
-        console.log('Is using fallback?', !envClientId);
+        const clientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID;
         
         if (!clientId) {
           console.error('CLIENT_ID is not defined!');
@@ -83,7 +76,7 @@ export function LoginScreen() {
           <div ref={googleButtonRef} className="flex justify-center mb-4"></div>
           
           {/* Fallback button for development */}
-          {!import.meta.env.PUBLIC_GOOGLE_CLIENT_ID || import.meta.env.PUBLIC_GOOGLE_CLIENT_ID === 'your_google_client_id_here' ? (
+          {!import.meta.env.PUBLIC_GOOGLE_CLIENT_ID ? (
             <div className="space-y-4">
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <p className="text-sm text-yellow-800 font-medium">Development Mode</p>
