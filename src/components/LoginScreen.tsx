@@ -21,8 +21,15 @@ export function LoginScreen() {
 
     script.onload = () => {
       if (window.google && googleButtonRef.current) {
+        const clientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID || '904580882877-uo48gf4dq08kkdmvajrgiasg931abamq.apps.googleusercontent.com';
+        
+        if (!clientId) {
+          console.error('CLIENT_ID is not defined!');
+          return;
+        }
+        
         window.google.accounts.id.initialize({
-          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+          client_id: clientId,
           callback: handleCredentialResponse,
         });
 
@@ -69,12 +76,12 @@ export function LoginScreen() {
           <div ref={googleButtonRef} className="flex justify-center mb-4"></div>
           
           {/* Fallback button for development */}
-          {!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID === 'your_google_client_id_here' ? (
+          {!import.meta.env.PUBLIC_GOOGLE_CLIENT_ID || import.meta.env.PUBLIC_GOOGLE_CLIENT_ID === 'your_google_client_id_here' ? (
             <div className="space-y-4">
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <p className="text-sm text-yellow-800 font-medium">Development Mode</p>
                 <p className="text-xs text-yellow-700 mt-1">
-                  Google OAuth not configured. Please set NEXT_PUBLIC_GOOGLE_CLIENT_ID in .env.local
+                  Google OAuth not configured. Please set PUBLIC_GOOGLE_CLIENT_ID in .env
                 </p>
               </div>
               <button 
