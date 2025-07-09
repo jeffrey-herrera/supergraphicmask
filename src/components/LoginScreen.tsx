@@ -39,7 +39,7 @@ export function LoginScreen() {
             theme: 'outline',
             size: 'large',
             text: 'signin_with',
-            width: 250,
+            width: 320,
           }
         );
       }
@@ -64,14 +64,14 @@ export function LoginScreen() {
             <h1 className="text-4xl font-bold text-gray-900">SuperMask</h1>
           </div>
           <p className="text-gray-600 mb-2">
-            Sign in with your <span className="text-purple-600 font-medium">@braze.com</span> email{' '}
-            to access SuperMask
+            Sign in with your <span className="text-purple-600 font-medium">@braze.com</span> email
+            <br />to access SuperMask
           </p>
         </div>
 
         {/* Google OAuth Button */}
         <div className="mb-6">
-          <div ref={googleButtonRef} className="flex justify-center mb-4 w-full"></div>
+          <div ref={googleButtonRef} className="flex justify-center items-center mb-4 w-full min-h-[48px]"></div>
           
 
         </div>
