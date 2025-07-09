@@ -115,9 +115,9 @@ export function FloatingSidebar() {
       )}
 
       {/* Floating Logo - Bottom Left */}
-      <div className="fixed bottom-4 left-4 z-30 px-6 py-4 bg-gradient-to-br from-white/95 via-blue-50/60 to-purple-50/40 backdrop-blur-md border border-border rounded-lg shadow-xl">
+      <div className="fixed bottom-4 left-4 z-30 px-6 py-4 gap-4 bg-gradient-to-br from-white/95 via-blue-50/60 to-purple-50/40 backdrop-blur-md border border-border rounded-lg shadow-xl">
         <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
+          <div className="flex-col items-center gap-2">
             <img src="/Braze_Primary_logo_PURPLE.svg" alt="Braze Logo" className="w-12" />
             <h2 className="text-2xl font-semibold whitespace-nowrap">SuperMask</h2>
           </div>
