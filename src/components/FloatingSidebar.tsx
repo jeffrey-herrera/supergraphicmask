@@ -123,10 +123,11 @@ export function FloatingSidebar() {
           </div>
           <button
             onClick={logout}
-            className="p-2 rounded-lg border border-border hover:bg-background/80 transition-colors"
+            className="flex items-center gap-1 p-2 rounded-lg border border-border hover:bg-background/80 transition-colors"
             title="Logout"
           >
             <LogOut className="w-4 h-4" />
+            <span className="text-sm font-medium">Logout</span>
           </button>
         </div>
       </div>

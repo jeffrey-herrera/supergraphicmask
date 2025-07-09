@@ -71,9 +71,7 @@ export function LoginScreen() {
 
         {/* Google OAuth Button */}
         <div className="mb-6">
-          <div id="googleButtonContainer" ref={googleButtonRef} className="flex justify-center items-center mb-4 w-full min-h-[56px] [&>div]:!h-[56px] [&>div>div]:!h-[56px] [&>div>div>iframe]:!h-[56px]"></div>
-          
-
+          <div ref={googleButtonRef} className="flex justify-center items-center mb-4 w-full"></div>
         </div>
 
         {/* Footer Text */}
