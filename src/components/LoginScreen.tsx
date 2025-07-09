@@ -21,7 +21,14 @@ export function LoginScreen() {
 
     script.onload = () => {
       if (window.google && googleButtonRef.current) {
-        const clientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID || '904580882877-uo48gf4dq08kkdmvajrgiasg931abamq.apps.googleusercontent.com';
+        const envClientId = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID;
+        const fallbackClientId = '904580882877-uo48gf4dq08kkdmvajrgiasg931abamq.apps.googleusercontent.com';
+        const clientId = envClientId || fallbackClientId;
+        
+        // Debug: Check which CLIENT_ID is being used
+        console.log('Environment variable CLIENT_ID:', envClientId);
+        console.log('Using CLIENT_ID:', clientId);
+        console.log('Is using fallback?', !envClientId);
         
         if (!clientId) {
           console.error('CLIENT_ID is not defined!');
