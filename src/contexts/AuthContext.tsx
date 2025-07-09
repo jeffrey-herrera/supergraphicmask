@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 
 interface GoogleUser {
   email: string;
@@ -43,22 +43,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = (credential: string) => {
     try {
-      let userData: GoogleUser;
-      
-      // Handle mock login for development
-      if (credential.startsWith('eyJ') || credential.includes('.')) {
-        // Real JWT token
-        const decoded: any = jwtDecode(credential);
-        userData = {
-          email: decoded.email,
-          name: decoded.name,
-          picture: decoded.picture
-        };
-      } else {
-        // Mock login - decode the base64 encoded mock data
-        const mockData = JSON.parse(atob(credential));
-        userData = mockData.payload || mockData;
-      }
+      // Decode JWT token from Google OAuth
+      const decoded: any = jwtDecode(credential);
+      const userData: GoogleUser = {
+        email: decoded.email,
+        name: decoded.name,
+        picture: decoded.picture
+      };
 
       // Check if email ends with @braze.com
       if (userData.email && userData.email.endsWith('@braze.com')) {
