@@ -120,25 +120,11 @@ export function ImageUploader() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="space-y-1 p-4">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-medium">Upload Image <span className="block text-[10px] text-muted-foreground/60 [text-wrap:balance]">
-          We'll optimize large images for you.
-        </span></h3>
-          {state.selectedImage && !isProcessing && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleRemoveImage}
-              className="text-destructive hover:text-destructive h-5 px-2 text-xs"
-            >
-              <X className="w-3 h-3 mr-1" />
-              Remove
-            </Button>
-          )}
-        </div>
-        {/* Minimal drop zone container */}
-        <div className="relative">
+      <div>
+        <h3 className="text-sm font-medium">Upload Image <span className="block text-[10px] text-muted-foreground/60 [text-wrap:balance]">We'll optimize large images for you.</span></h3>
+      </div>
+      <div className="flex-1 flex flex-col justify-center">
+        <div className="relative min-h-[120px] h-full flex flex-col justify-center">
           {!state.selectedImage ? (
             <div
               className={`
@@ -149,7 +135,7 @@ export function ImageUploader() {
                 }
                 ${isProcessing ? 'cursor-not-allowed' : 'cursor-pointer'}
                 backdrop-blur-sm border-2 border-solid rounded-xl
-                px-4 py-4 text-center max-w-full min-h-[90px] flex flex-col justify-center
+                px-4 text-center max-w-full w-full h-full flex flex-col justify-center
               `}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}

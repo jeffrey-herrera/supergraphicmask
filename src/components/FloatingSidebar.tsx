@@ -17,7 +17,7 @@ export function FloatingSidebar() {
   return (
     <>
       {/* Desktop Layout - Hidden on mobile */}
-      <div className="hidden lg:block fixed top-4 left-4 right-4 z-40 bg-background border border-border rounded-lg shadow-xl overflow-hidden h-[168px]">
+      <div className="hidden lg:block fixed top-4 left-4 right-4 z-40 bg-background border border-border rounded-lg shadow-xl overflow-hidden h-[168px] p-4">
         {/* Single Row, 5-Column Layout */}
         <div className="h-full">
           <div className="grid grid-cols-12 gap-2 h-full items-start">
