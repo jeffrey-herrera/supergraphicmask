@@ -176,10 +176,6 @@ export function ImageUploader() {
                   {isProcessing ? 'Processing...' : 
                     isDragging ? 'Drop image here' : 'Drop or click to upload'}
                 </h3>
-                <p className="text-xs text-muted-foreground">
-                  {isProcessing ? 'Optimizing image...' :
-                    isDragging ? 'Release to upload' : 'or browse files'}
-                </p>
                 <div className="text-[10px] text-muted-foreground/60">
                   {isProcessing ? 'Please wait...' : 'JPG, PNG, GIF, and more'}
                 </div>
