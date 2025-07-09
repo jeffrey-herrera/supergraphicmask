@@ -20,7 +20,7 @@ export function FloatingSidebar() {
       <div className="hidden lg:block fixed top-4 left-4 right-4 z-40 bg-background border border-border rounded-lg shadow-xl overflow-hidden h-[168px]">
         {/* Single Row, 5-Column Layout */}
         <div className="h-full">
-          <div className="grid grid-cols-12 gap-2 h-full">
+          <div className="grid grid-cols-12 gap-2 h-full items-start">
 
             {/* Column 1: Upload Section */}
             <div className="col-span-3 flex-1 min-w-0 align-start h-full">
@@ -39,7 +39,9 @@ export function FloatingSidebar() {
 
             {/* Column 4: Export Section */}
             <div className="col-span-2 flex-1 min-w-0 h-full">
-              <ExportButton selectedSize={selectedSize} />
+              <div className="h-full flex flex-col justify-center">
+                <ExportButton selectedSize={selectedSize} />
+              </div>
             </div>
           </div>
         </div>

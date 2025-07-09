@@ -20,7 +20,7 @@ export function SizeSelector({ selectedSize, onSizeChange }: SizeSelectorProps) 
   const isDisabled = !state.selectedImage;
 
   return (
-    <div className="h-full flex flex-col justify-center">
+    <div className="h-full flex flex-col">
       <div className={`space-y-4 p-4 ${isDisabled ? 'opacity-50' : ''}`}>
         <h3 className="text-sm font-medium">
           Select Output Size {isDisabled && <span className="text-[10px] font-normal block">(Upload an image to unlock size options)</span>}

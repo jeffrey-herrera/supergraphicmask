@@ -153,7 +153,7 @@ export function ExportButton({ selectedSize }: ExportButtonProps) {
   const isDisabled = !state.selectedImage || !state.selectedMask || isExporting;
 
   return (
-    <div className="p-4">
+    <div className="h-full flex flex-col justify-center items-center">
       <div className="w-full space-y-4">
         {/* Export Button */}
         <button

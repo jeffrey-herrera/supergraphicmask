@@ -119,13 +119,12 @@ export function ImageUploader() {
   };
 
   return (
-    <div className="h-full flex flex-col justify-center">
+    <div className="h-full flex flex-col">
       <div className="space-y-1 p-4">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium">Upload Image <span className="block text-[10px] text-muted-foreground/60 [text-wrap:balance]">
           We'll optimize large images for you.
         </span></h3>
-        
           {state.selectedImage && !isProcessing && (
             <Button
               variant="ghost"
@@ -150,7 +149,7 @@ export function ImageUploader() {
                 }
                 ${isProcessing ? 'cursor-not-allowed' : 'cursor-pointer'}
                 backdrop-blur-sm border-2 border-solid rounded-xl
-                px-4 py-4 text-center max-w-full min-h-[90px]
+                px-4 py-4 text-center max-w-full min-h-[90px] flex flex-col justify-center
               `}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
