@@ -64,8 +64,8 @@ export function LoginScreen() {
             <h1 className="text-4xl font-bold text-gray-900">SuperMask</h1>
           </div>
           <p className="text-gray-600 mb-2">
-            Sign in with your <span className="text-purple-600 font-medium">@braze.com</span> email
-            <br />to access SuperMask
+            Sign in with your <span className="text-purple-600 font-medium">@braze.com</span> email{' '}
+            to access SuperMask
           </p>
         </div>
 
