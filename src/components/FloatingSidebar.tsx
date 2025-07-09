@@ -17,33 +17,29 @@ export function FloatingSidebar() {
   return (
     <>
       {/* Desktop Layout - Hidden on mobile */}
-      <div className="hidden lg:block fixed top-4 left-4 right-4 z-40 bg-background border border-border rounded-lg shadow-xl overflow-hidden h-[168px] p-4">
+      <div className="hidden lg:block fixed top-4 left-4 right-4 p-4 z-40 bg-background border border-border rounded-lg shadow-xl overflow-hidden h-[168px] p-4">
         {/* Single Row, 5-Column Layout */}
-        <div className="h-full">
-          <div className="grid grid-cols-12 gap-2 h-full items-start">
+          <div className="grid grid-cols-12 gap-6 h-full items-start">
 
             {/* Column 1: Upload Section */}
-            <div className="col-span-3 flex-1 min-w-0 align-start h-full">
+            <div className="col-span-3 flex-col flex-1 min-w-0 align-start h-full">
               <ImageUploader />
             </div>
 
             {/* Column 2: Masks Section */}
-            <div className="col-span-4 flex-1 min-w-0 align-start h-full">
+            <div className="col-span-4 flex-col flex-1 min-w-0 align-start h-full">
               <MaskSelector />
             </div>
 
             {/* Column 3: Size Selection */}
-            <div className="col-span-3 flex-1 min-w-0 align-start h-full">
+            <div className="col-span-3 flex-col flex-1 min-w-0 align-start h-full">
               <SizeSelector selectedSize={selectedSize} onSizeChange={setSelectedSize} />
             </div>
 
             {/* Column 4: Export Section */}
             <div className="col-span-2 flex-1 min-w-0 h-full">
-              <div className="h-full flex flex-col justify-center">
                 <ExportButton selectedSize={selectedSize} />
-              </div>
             </div>
-          </div>
         </div>
       </div>
 
@@ -118,7 +114,7 @@ export function FloatingSidebar() {
 
       {/* Floating Logo - Bottom Left */}
       <div className="fixed bottom-4 left-4 z-30 px-6 py-4 gap-8 bg-gradient-to-br from-white/95 via-blue-50/60 to-purple-50/40 backdrop-blur-md border border-border rounded-lg shadow-xl">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-8">
           <div className="flex-col items-center gap-2">
             <img src="/Braze_Primary_logo_PURPLE.svg" alt="Braze Logo" className="w-12" />
             <h2 className="text-2xl font-semibold whitespace-nowrap">SuperMask</h2>

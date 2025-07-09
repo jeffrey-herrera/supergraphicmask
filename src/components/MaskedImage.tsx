@@ -389,10 +389,10 @@ export function MaskedImage() {
         }`}
         style={{
           backgroundImage: `
-            linear-gradient(45deg, #f1f5f9 25%, transparent 25%), 
-            linear-gradient(-45deg, #f1f5f9 25%, transparent 25%), 
-            linear-gradient(45deg, transparent 75%, #f1f5f9 75%), 
-            linear-gradient(-45deg, transparent 75%, #f1f5f9 75%)
+            linear-gradient(45deg, #E3E1FF 25%, transparent 25%), 
+            linear-gradient(-45deg, #E3E1FF 25%, transparent 25%), 
+            linear-gradient(45deg, transparent 75%, #E3E1FF 30%), 
+            linear-gradient(-45deg, transparent 75%, #E3E1FF 30%)
           `,
           backgroundSize: '20px 20px',
           backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px'

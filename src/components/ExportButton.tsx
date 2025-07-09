@@ -153,32 +153,19 @@ export function ExportButton({ selectedSize }: ExportButtonProps) {
   const isDisabled = !state.selectedImage || !state.selectedMask || isExporting;
 
   return (
-    <div className="h-full flex flex-col justify-center items-center">
+    <div>
+      {/* Export Button and help text go here, no extra wrappers */}
       <div className="w-full space-y-4">
         {/* Export Button */}
         <button
-          onClick={() => handleExport(selectedSize)}
-          disabled={isDisabled}
-          className={`w-full font-bold text-xs sm:text-sm py-6 sm:py-8 px-3 sm:px-4 rounded-full shadow-2xl transition-all duration-300 transform flex items-center justify-center gap-1 sm:gap-2 relative overflow-hidden ${
-            isDisabled 
-              ? 'bg-gray-400 text-gray-200 cursor-not-allowed opacity-60' 
-              : 'bg-gradient-to-r from-[#5710E5] via-[#7C3AED] to-[#A855F7] hover:from-[#4A0DCC] hover:via-[#6B21A8] hover:to-[#9333EA] text-white hover:shadow-[0_20px_40px_-8px_rgba(87,16,229,0.6)] hover:scale-[1.02] active:scale-[0.98]'
-          }`}
+          className="w-full h-16 rounded-full bg-primary text-white font-semibold text-lg flex items-center justify-center disabled:opacity-50"
+          disabled
         >
-          {isExporting ? (
-            <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-          ) : (
-            <Download className="w-4 h-4 sm:w-5 sm:h-5" />
-          )}
-          <span className="hidden sm:inline">{isExporting ? 'Exporting...' : 'Export Image'}</span>
-          <span className="sm:hidden">{isExporting ? 'Export...' : 'Export'}</span>
+          <span className="mr-2">⬇️</span> Export Image
         </button>
-        
-        {isDisabled && !isExporting && (
-          <p className="text-[10px] text-muted-foreground text-center [text-wrap:balance]">
-            Add an image and shape to export
-          </p>
-        )}
+        <div className="text-xs text-muted-foreground text-center">
+          Add an image and shape to export
+        </div>
       </div>
     </div>
   );
