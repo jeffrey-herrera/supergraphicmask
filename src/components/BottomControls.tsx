@@ -79,8 +79,8 @@ export function BottomControls() {
   const isFillActive = state.transform.scale === 1 && state.transform.translateX === 0 && state.transform.translateY === 0;
 
   return (
-    <div className="fixed left-1/2 transform -translate-x-1/2 z-30 max-w-[calc(100vw-48px)] max-w-4xl" style={{ bottom: '48px' }}>
-      <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg px-4 py-3 mx-6">
+    <div className="fixed bottom-4 right-4 z-30">
+      <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg px-4 py-3">
         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
           {/* Zoom controls */}
           <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">

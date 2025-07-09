@@ -2,19 +2,15 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAppState } from '@/lib/store';
 import { getMaskById } from '@/data/masks.tsx';
-import { Download, Loader2, Check } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
 
-// Export size options
-const EXPORT_SIZES = [
-  { label: '512px', value: 512, description: 'Small' },
-  { label: '1024px', value: 1024, description: 'Medium' },
-  { label: '2048px', value: 2048, description: 'Large' },
-] as const;
+interface ExportButtonProps {
+  selectedSize: number;
+}
 
-export function ExportButton() {
+export function ExportButton({ selectedSize }: ExportButtonProps) {
   const { state, dispatch } = useAppState();
   const [isExporting, setIsExporting] = useState(false);
-  const [selectedSize, setSelectedSize] = useState(1024); // Default to medium
 
   const selectedMask = state.selectedMask ? getMaskById(state.selectedMask) : null;
 
@@ -155,63 +151,31 @@ export function ExportButton() {
   };
 
   const isDisabled = !state.selectedImage || !state.selectedMask || isExporting;
-  const isExportSizeDisabled = !state.selectedImage;
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-8">
-        {/* Size Selector */}
-        <div className={`space-y-2 ${isExportSizeDisabled ? 'opacity-50' : ''}`}>
-          <h3 className="text-sm font-medium">
-            Select Output Size {isDisabled && <span className="text-[10px] font-normal block">(Upload an image to unlock mask options)</span>}
-          </h3>
-          <div className="grid grid-cols-3 gap-2">
-            {EXPORT_SIZES.map((size) => (
-              <button
-                key={size.value}
-                onClick={() => setSelectedSize(size.value)}
-                disabled={isDisabled}
-                className={`
-                  relative p-2 rounded-md border text-xs transition-all duration-200
-                  ${selectedSize === size.value 
-                    ? 'border-primary bg-primary/5 text-primary' 
-                    : 'border-muted-foreground/25 hover:border-muted-foreground/50 hover:bg-muted/5'
-                  }
-                  ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-                `}
-              >
-                <div className="font-medium">{size.label}</div>
-                <div className="text-muted-foreground">{size.description}</div>
-                {selectedSize === size.value && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full flex items-center justify-center">
-                    <Check className="w-2 h-2 text-primary-foreground" />
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-
+    <div className="p-4">
+      <div className="w-full space-y-4">
         {/* Export Button */}
         <button
           onClick={() => handleExport(selectedSize)}
           disabled={isDisabled}
-          className={`w-full font-bold text-sm sm:text-base py-3 sm:py-4 px-4 sm:px-6 rounded-full shadow-2xl transition-all duration-300 transform flex items-center justify-center gap-2 sm:gap-3 relative overflow-hidden ${
+          className={`w-full font-bold text-xs sm:text-sm py-6 sm:py-8 px-3 sm:px-4 rounded-full shadow-2xl transition-all duration-300 transform flex items-center justify-center gap-1 sm:gap-2 relative overflow-hidden ${
             isDisabled 
               ? 'bg-gray-400 text-gray-200 cursor-not-allowed opacity-60' 
               : 'bg-gradient-to-r from-[#5710E5] via-[#7C3AED] to-[#A855F7] hover:from-[#4A0DCC] hover:via-[#6B21A8] hover:to-[#9333EA] text-white hover:shadow-[0_20px_40px_-8px_rgba(87,16,229,0.6)] hover:scale-[1.02] active:scale-[0.98]'
           }`}
         >
           {isExporting ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
+            <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
           ) : (
-            <Download className="w-5 h-5" />
+            <Download className="w-4 h-4 sm:w-5 sm:h-5" />
           )}
-          <span>{isExporting ? 'Exporting...' : 'Export Image'}</span>
+          <span className="hidden sm:inline">{isExporting ? 'Exporting...' : 'Export Image'}</span>
+          <span className="sm:hidden">{isExporting ? 'Export...' : 'Export'}</span>
         </button>
         
         {isDisabled && !isExporting && (
-          <p className="text-xs text-muted-foreground text-center [text-wrap:balance]">
+          <p className="text-[10px] text-muted-foreground text-center [text-wrap:balance]">
             Add an image and shape to export
           </p>
         )}

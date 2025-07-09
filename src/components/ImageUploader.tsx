@@ -119,9 +119,12 @@ export function ImageUploader() {
   };
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-1 p-4">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-medium">Upload Image</h3>
+        <h3 className="text-sm font-medium">Upload Image <span className="block text-[10px] text-muted-foreground/60 [text-wrap:balance]">
+        We'll optimize large images for you.
+      </span></h3>
+      
         {state.selectedImage && !isProcessing && (
           <Button
             variant="ghost"
@@ -153,30 +156,34 @@ export function ImageUploader() {
             onDrop={handleDrop}
             onClick={handleClick}
           >
-            <div className={`
-              w-8 h-8 mx-auto mb-2 rounded-full flex items-center justify-center
-              smooth-transition
-              ${isDragging ? 'bg-primary/20' : 'bg-muted/50'}
-            `}>
-              {isProcessing ? (
-                <Loader2 className="w-5 h-5 text-primary animate-spin" />
-              ) : (
-                <Upload className={`
-                  w-5 h-5 smooth-transition
-                  ${isDragging ? 'text-primary' : 'text-muted-foreground'}
-                `} />
-              )}
-            </div>
-            <h3 className="text-xs font-semibold mb-1">
-              {isProcessing ? 'Processing...' : 
-                isDragging ? 'Drop image here' : 'Drop or click to upload'}
-            </h3>
-            <p className="text-xs text-muted-foreground mb-1 [text-wrap:balance]">
-              {isProcessing ? 'Optimizing image...' :
-                isDragging ? 'Release to upload' : 'or browse files'}
-            </p>
-            <div className="text-[10px] text-muted-foreground/60 [text-wrap:balance]">
-              {isProcessing ? 'Please wait...' : 'JPG, PNG, GIF, and more'}
+            <div className="flex items-center justify-center gap-3">
+              <div className={`
+                w-8 h-8 flex-shrink-0 rounded-full flex items-center justify-center
+                smooth-transition
+                ${isDragging ? 'bg-primary/20' : 'bg-muted'}
+              `}>
+                {isProcessing ? (
+                  <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                ) : (
+                  <Upload className={`
+                    w-6 h-6 smooth-transition
+                    ${isDragging ? 'text-primary' : 'text-muted-foreground'}
+                  `} />
+                )}
+              </div>
+              <div className="text-left inline-block">
+                <h3 className="text-xs font-semibold">
+                  {isProcessing ? 'Processing...' : 
+                    isDragging ? 'Drop image here' : 'Drop or click to upload'}
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  {isProcessing ? 'Optimizing image...' :
+                    isDragging ? 'Release to upload' : 'or browse files'}
+                </p>
+                <div className="text-[10px] text-muted-foreground/60">
+                  {isProcessing ? 'Please wait...' : 'JPG, PNG, GIF, and more'}
+                </div>
+              </div>
             </div>
             <input
               ref={fileInputRef}
@@ -228,10 +235,6 @@ export function ImageUploader() {
           </div>
         )}
       </div>
-      {/* Optimization helper text below the container */}
-      <p className="text-[10px] text-muted-foreground/60 mt-1 [text-wrap:balance] text-center">
-        We'll optimize large images for you.
-      </p>
     </div>
   );
 }
