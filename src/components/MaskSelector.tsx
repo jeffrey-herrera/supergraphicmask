@@ -25,7 +25,7 @@ export function MaskSelector() {
   const isDisabled = !state.selectedImage;
 
   return (
-    <div className={`space-y-4 p-4 ${isDisabled ? 'opacity-50' : ''}`}>
+    <div className="h-full flex flex-col justify-center">
       <h3 className="text-sm font-medium">
         Choose a Shape {isDisabled && <span className="text-[10px] font-normal block">(Upload an image to unlock mask options)</span>}
       </h3>

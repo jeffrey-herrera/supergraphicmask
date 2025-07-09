@@ -17,10 +17,10 @@ export function FloatingSidebar() {
   return (
     <>
       {/* Desktop Layout - Hidden on mobile */}
-      <div className="hidden lg:block fixed top-4 left-4 right-4 z-40 bg-background border border-border rounded-lg shadow-xl overflow-hidden">
+      <div className="hidden lg:block fixed top-4 left-4 right-4 z-40 bg-background border border-border rounded-lg shadow-xl overflow-hidden h-[168px]">
         {/* Single Row, 5-Column Layout */}
-        <div>
-          <div className="grid grid-cols-12 gap-2">
+        <div className="h-full">
+          <div className="grid grid-cols-12 gap-2 h-full">
 
             {/* Column 1: Upload Section */}
             <div className="col-span-3 flex-1 min-w-0 align-start h-full">
@@ -115,7 +115,7 @@ export function FloatingSidebar() {
       )}
 
       {/* Floating Logo - Bottom Left */}
-      <div className="fixed bottom-4 left-4 z-30 px-6 py-4 gap-4 bg-gradient-to-br from-white/95 via-blue-50/60 to-purple-50/40 backdrop-blur-md border border-border rounded-lg shadow-xl">
+      <div className="fixed bottom-4 left-4 z-30 px-6 py-4 gap-8 bg-gradient-to-br from-white/95 via-blue-50/60 to-purple-50/40 backdrop-blur-md border border-border rounded-lg shadow-xl">
         <div className="flex items-center justify-between gap-4">
           <div className="flex-col items-center gap-2">
             <img src="/Braze_Primary_logo_PURPLE.svg" alt="Braze Logo" className="w-12" />

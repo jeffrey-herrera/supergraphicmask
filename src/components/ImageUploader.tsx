@@ -119,106 +119,69 @@ export function ImageUploader() {
   };
 
   return (
-    <div className="space-y-1 p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-medium">Upload Image <span className="block text-[10px] text-muted-foreground/60 [text-wrap:balance]">
-        We'll optimize large images for you.
-      </span></h3>
-      
-        {state.selectedImage && !isProcessing && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleRemoveImage}
-            className="text-destructive hover:text-destructive h-5 px-2 text-xs"
-          >
-            <X className="w-3 h-3 mr-1" />
-            Remove
-          </Button>
-        )}
-      </div>
-      {/* Minimal drop zone container */}
-      <div className="relative">
-        {!state.selectedImage ? (
-          <div
-            className={`
-              pointer-events-auto smooth-transition hover-lift
-              ${isDragging 
-                ? 'scale-102 bg-primary/5 border-primary/50' 
-                : 'bg-background/60 border-border/50 hover:bg-background/80 hover:border-border/80'
-              }
-              ${isProcessing ? 'cursor-not-allowed' : 'cursor-pointer'}
-              backdrop-blur-sm border-2 border-solid rounded-xl
-              px-4 py-4 text-center max-w-full min-h-[90px]
-            `}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onClick={handleClick}
-          >
-            <div className="flex items-center justify-center gap-3">
-              <div className={`
-                w-8 h-8 flex-shrink-0 rounded-full flex items-center justify-center
-                smooth-transition
-                ${isDragging ? 'bg-primary/20' : 'bg-muted'}
-              `}>
-                {isProcessing ? (
-                  <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                ) : (
-                  <Upload className={`
-                    w-6 h-6 smooth-transition
-                    ${isDragging ? 'text-primary' : 'text-muted-foreground'}
-                  `} />
-                )}
-              </div>
-              <div className="text-left inline-block">
-                <h3 className="text-xs font-semibold">
-                  {isProcessing ? 'Processing...' : 
-                    isDragging ? 'Drop image here' : 'Drop or click to upload'}
-                </h3>
-                <div className="text-[10px] text-muted-foreground/60">
-                  {isProcessing ? 'Please wait...' : 'JPG, PNG, GIF, and more'}
+    <div className="h-full flex flex-col justify-center">
+      <div className="space-y-1 p-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-medium">Upload Image <span className="block text-[10px] text-muted-foreground/60 [text-wrap:balance]">
+          We'll optimize large images for you.
+        </span></h3>
+        
+          {state.selectedImage && !isProcessing && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleRemoveImage}
+              className="text-destructive hover:text-destructive h-5 px-2 text-xs"
+            >
+              <X className="w-3 h-3 mr-1" />
+              Remove
+            </Button>
+          )}
+        </div>
+        {/* Minimal drop zone container */}
+        <div className="relative">
+          {!state.selectedImage ? (
+            <div
+              className={`
+                pointer-events-auto smooth-transition hover-lift
+                ${isDragging 
+                  ? 'scale-102 bg-primary/5 border-primary/50' 
+                  : 'bg-background/60 border-border/50 hover:bg-background/80 hover:border-border/80'
+                }
+                ${isProcessing ? 'cursor-not-allowed' : 'cursor-pointer'}
+                backdrop-blur-sm border-2 border-solid rounded-xl
+                px-4 py-4 text-center max-w-full min-h-[90px]
+              `}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={handleClick}
+            >
+              <div className="flex items-center justify-center gap-3">
+                <div className={`
+                  w-8 h-8 flex-shrink-0 rounded-full flex items-center justify-center
+                  smooth-transition
+                  ${isDragging ? 'bg-primary/20' : 'bg-muted'}
+                `}>
+                  {isProcessing ? (
+                    <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                  ) : (
+                    <Upload className={`
+                      w-6 h-6 smooth-transition
+                      ${isDragging ? 'text-primary' : 'text-muted-foreground'}
+                    `} />
+                  )}
+                </div>
+                <div className="text-left inline-block">
+                  <h3 className="text-xs font-semibold">
+                    {isProcessing ? 'Processing...' : 
+                      isDragging ? 'Drop image here' : 'Drop or click to upload'}
+                  </h3>
+                  <div className="text-[10px] text-muted-foreground/60">
+                    {isProcessing ? 'Please wait...' : 'JPG, PNG, GIF, and more'}
+                  </div>
                 </div>
               </div>
-            </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileInput}
-              disabled={isProcessing}
-            />
-          </div>
-        ) : (
-          <div className="space-y-2">
-            <div className="relative">
-              <img
-                src={state.selectedImage}
-                alt="Selected image"
-                className="w-full h-16 object-cover rounded-lg smooth-transition hover-lift"
-              />
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => fileInputRef.current?.click()}
-                className="flex-1 smooth-transition hover-lift text-xs h-7"
-                disabled={isProcessing}
-              >
-                {isProcessing ? (
-                  <>
-                    <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="w-3 h-3 mr-1" />
-                    Replace
-                  </>
-                )}
-              </Button>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -228,8 +191,47 @@ export function ImageUploader() {
                 disabled={isProcessing}
               />
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="space-y-2">
+              <div className="relative">
+                <img
+                  src={state.selectedImage}
+                  alt="Selected image"
+                  className="w-full h-16 object-cover rounded-lg smooth-transition hover-lift"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex-1 smooth-transition hover-lift text-xs h-7"
+                  disabled={isProcessing}
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-3 h-3 mr-1" />
+                      Replace
+                    </>
+                  )}
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileInput}
+                  disabled={isProcessing}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
