@@ -1,5 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import jwtDecode from 'jwt-decode';
+
+// Simple JWT decoder function
+function decodeJWT(token: string) {
+  try {
+    const payload = token.split('.')[1];
+    const decoded = JSON.parse(atob(payload));
+    return decoded;
+  } catch (error) {
+    throw new Error('Invalid JWT token');
+  }
+}
 
 interface GoogleUser {
   email: string;
@@ -44,7 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = (credential: string) => {
     try {
       // Decode JWT token from Google OAuth
-      const decoded: any = jwtDecode(credential);
+      const decoded: any = decodeJWT(credential);
       const userData: GoogleUser = {
         email: decoded.email,
         name: decoded.name,
