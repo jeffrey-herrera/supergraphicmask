@@ -67,20 +67,15 @@ export function FloatingSidebar() {
         </div>
 
       {/* Mobile Menu Button - Shown on mobile */}
-      <div className="lg:hidden fixed top-4 left-4 right-4 z-40 flex items-center justify-between p-4 bg-gradient-to-br from-white/95 via-blue-50/60 to-purple-50/40 backdrop-blur-md border border-border rounded-lg shadow-xl">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={logout}
-            className="flex items-center gap-1 px-3 py-2 rounded-lg border border-border hover:bg-background/80 transition-colors"
-            title="Logout"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="text-sm font-medium">Logout</span>
-          </button>
+      <div className="lg:hidden fixed top-4 left-4 right-4 z-40 flex items-stretch justify-between bg-gradient-to-br from-white/95 via-blue-50/60 to-purple-50/40 backdrop-blur-md border border-border rounded-lg shadow-xl overflow-hidden">
+        <div className="flex flex-col p-6">
+          <img src="/Braze_Primary_logo_PURPLE.svg" alt="Braze Logo" className="w-10 relative top-[3px]" />
+          <h2 className="text-xl font-semibold">SuperMask</h2>
+        </div>
+        <div className="flex items-center gap-2 p-4 pl-0">
           <button
             onClick={() => setIsMobileMenuOpen(true)}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:bg-background/80 transition-colors"
-          >
+            className="h-full flex items-center gap-2 px-4 rounded-lg border border-border hover:bg-background/80 transition-colors"          >
             <Settings className="w-4 h-4" />
             <span className="text-sm font-medium">Edit & Export</span>
           </button>
