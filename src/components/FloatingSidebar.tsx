@@ -69,8 +69,8 @@ export function FloatingSidebar() {
       {/* Mobile Menu Button - Shown on mobile */}
       <div className="lg:hidden fixed top-4 left-4 right-4 z-40 flex items-center justify-between p-4 bg-gradient-to-br from-white/95 via-blue-50/60 to-purple-50/40 backdrop-blur-md border border-border rounded-lg shadow-xl">
         <div className="flex items-center gap-2">
-          <img src="/Braze_Primary_logo_PURPLE.svg" alt="Braze Logo" className="w-8" />
-          <h2 className="text-lg font-semibold">SuperMask</h2>
+          <img src="/Braze_Primary_logo_PURPLE.svg" alt="Braze Logo" className="w-13 relative top-[3px]" />
+          <h2 className="text-2xl font-semibold">SuperMask</h2>
         </div>
         <div className="flex items-center gap-2">
           <button
