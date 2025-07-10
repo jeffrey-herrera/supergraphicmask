@@ -125,7 +125,7 @@ export function ImageUploader() {
         {!state.selectedImage ? (
           <div
             className={`
-              pointer-events-auto smooth-transition hover-lift h-24
+              pointer-events-auto smooth-transition hover-lift h-24 lg:flex-1 lg:h-auto
               ${isDragging 
                 ? 'scale-102 bg-primary/5 border-primary/50' 
                 : 'bg-background/60 border-border/50 hover:bg-background/80 hover:border-border/80'
@@ -174,7 +174,7 @@ export function ImageUploader() {
             />
           </div>
         ) : (
-          <div className="relative h-24">
+          <div className="relative h-24 lg:h-20">
             <img
               src={state.selectedImage}
               alt="Selected image"
