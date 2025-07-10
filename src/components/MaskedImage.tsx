@@ -181,7 +181,10 @@ export function MaskedImage() {
 
     // Touch events
     const handleNativeTouchStart = (e: TouchEvent) => {
-      if (!state.selectedImage || !selectedMask) return;
+      if (!state.selectedImage || !selectedMask) {
+        console.log('Touch blocked: selectedImage:', !!state.selectedImage, 'selectedMask:', !!selectedMask);
+        return;
+      }
       e.preventDefault();
       if (e.touches.length === 1) {
         const touch = e.touches[0];
@@ -198,7 +201,10 @@ export function MaskedImage() {
       }
     };
     const handleNativeTouchMove = (e: TouchEvent) => {
-      if (!state.selectedImage || !selectedMask) return;
+      if (!state.selectedImage || !selectedMask) {
+        console.log('Touch move blocked: selectedImage:', !!state.selectedImage, 'selectedMask:', !!selectedMask);
+        return;
+      }
       e.preventDefault();
       if (e.touches.length === 1 && isDraggingRef.current && !isMultiTouchRef.current) {
         const touch = e.touches[0];
