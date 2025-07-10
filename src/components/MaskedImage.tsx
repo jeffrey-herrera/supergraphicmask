@@ -181,7 +181,7 @@ export function MaskedImage() {
 
     // Touch events
     const handleNativeTouchStart = (e: TouchEvent) => {
-      if (!state.selectedImage) return;
+      if (!state.selectedImage || !selectedMask) return;
       e.preventDefault();
       if (e.touches.length === 1) {
         const touch = e.touches[0];
@@ -198,7 +198,7 @@ export function MaskedImage() {
       }
     };
     const handleNativeTouchMove = (e: TouchEvent) => {
-      if (!state.selectedImage) return;
+      if (!state.selectedImage || !selectedMask) return;
       e.preventDefault();
       if (e.touches.length === 1 && isDraggingRef.current && !isMultiTouchRef.current) {
         const touch = e.touches[0];
@@ -252,7 +252,7 @@ export function MaskedImage() {
     };
     // Wheel event
     const handleNativeWheel = (e: WheelEvent) => {
-      if (!state.selectedImage) return;
+      if (!state.selectedImage || !selectedMask) return;
       e.preventDefault();
       const delta = e.deltaY > 0 ? -0.1 : 0.1;
       const newScale = Math.max(0.1, Math.min(3, state.transform.scale + delta));
@@ -274,7 +274,7 @@ export function MaskedImage() {
       canvas.removeEventListener('touchend', handleNativeTouchEnd);
       canvas.removeEventListener('wheel', handleNativeWheel);
     };
-  }, [state.selectedImage, state.transform, dispatch]);
+  }, [state.selectedImage, selectedMask, state.transform, dispatch]);
 
   // Remove e.preventDefault() from React synthetic handlers
   const handleTouchStart = () => {};
@@ -284,14 +284,14 @@ export function MaskedImage() {
 
   // Mouse event handlers
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (!state.selectedImage) return;
+    if (!state.selectedImage || !selectedMask) return;
     
     setIsDragging(true);
     setDragStart({ x: e.clientX, y: e.clientY });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !state.selectedImage) return;
+    if (!isDragging || !state.selectedImage || !selectedMask) return;
 
     const deltaX = e.clientX - dragStart.x;
     const deltaY = e.clientY - dragStart.y;

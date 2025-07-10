@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAppState } from '@/lib/store';
 import { getMaskById } from '@/data/masks.tsx';
-import { Download, Loader2 } from 'lucide-react';
+import { Download, Loader2, Share } from 'lucide-react';
 
 interface ExportButtonProps {
   selectedSize: number;
@@ -13,6 +13,11 @@ export function ExportButton({ selectedSize }: ExportButtonProps) {
   const [isExporting, setIsExporting] = useState(false);
 
   const selectedMask = state.selectedMask ? getMaskById(state.selectedMask) : null;
+
+  // Feature detection
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const canWebShare = typeof navigator.share === 'function' && typeof navigator.canShare === 'function';
+  const supportsPhotoLibrary = isMobile && canWebShare;
 
   const handleExport = async (exportSize: number) => {
     if (!state.selectedImage || !selectedMask) return;
@@ -126,21 +131,59 @@ export function ExportButton({ selectedSize }: ExportButtonProps) {
       // Reset composite operation
       ctx.globalCompositeOperation = 'source-over';
               
-              // Download the image
-              canvas.toBlob((blob) => {
-                if (blob) {
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-          a.download = `masked-image-${exportSize}x${exportSize}-${Date.now()}.png`;
-                  document.body.appendChild(a);
-                  a.click();
-                  document.body.removeChild(a);
-                  URL.revokeObjectURL(url);
-                }
-                
-                setIsExporting(false);
-                dispatch({ type: 'SET_EXPORTING', payload: false });
+      // Export the image - Web Share API or download
+      canvas.toBlob(async (blob) => {
+        if (!blob) {
+          setIsExporting(false);
+          dispatch({ type: 'SET_EXPORTING', payload: false });
+          return;
+        }
+
+        try {
+          // Try Web Share API first (mobile photo library)
+          if (supportsPhotoLibrary) {
+            const file = new File([blob], `supermask-${exportSize}x${exportSize}-${Date.now()}.png`, { 
+              type: 'image/png' 
+            });
+            
+            if (navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                files: [file],
+                title: 'SuperMask Export',
+                text: 'Exported image from SuperMask'
+              });
+              setIsExporting(false);
+              dispatch({ type: 'SET_EXPORTING', payload: false });
+              return;
+            }
+          }
+          
+          // Fallback to download
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `supermask-${exportSize}x${exportSize}-${Date.now()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+        } catch (error) {
+          console.error('Share failed, falling back to download:', error);
+          
+          // Fallback to download if share fails
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `supermask-${exportSize}x${exportSize}-${Date.now()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
+        
+        setIsExporting(false);
+        dispatch({ type: 'SET_EXPORTING', payload: false });
       }, 'image/png', 1.0); // Max quality
 
     } catch (error) {
@@ -165,10 +208,19 @@ export function ExportButton({ selectedSize }: ExportButtonProps) {
       >
         {isExporting ? (
           <Loader2 className="w-5 h-5 animate-spin" />
+        ) : supportsPhotoLibrary ? (
+          <Share className="w-5 h-5" />
         ) : (
           <Download className="w-5 h-5" />
         )}
-        <span>{isExporting ? 'Exporting...' : 'Export Image'}</span>
+        <span>
+          {isExporting 
+            ? 'Exporting...' 
+            : supportsPhotoLibrary 
+              ? 'Save to Photos' 
+              : 'Export Image'
+          }
+        </span>
       </button>
     </div>
   );

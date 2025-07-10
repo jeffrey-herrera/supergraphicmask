@@ -5,7 +5,7 @@ import { ExportButton } from './ExportButton';
 import { SizeSelector } from './SizeSelector';
 import { useAppState } from '@/lib/store';
 import { useState } from 'react';
-import { Menu, X, LogOut, EyeOff, Eye } from 'lucide-react';
+import { X, LogOut, EyeOff, Eye, Settings } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 export function FloatingSidebar() {
@@ -68,8 +68,8 @@ export function FloatingSidebar() {
 
       {/* Mobile Menu Button - Shown on mobile */}
       <div className="lg:hidden fixed top-4 left-4 right-4 z-40 flex items-center justify-between p-4 bg-gradient-to-br from-white/95 via-blue-50/60 to-purple-50/40 backdrop-blur-md border border-border rounded-lg shadow-xl">
-        <div className="flex items-center gap-2">
-          <img src="/Braze_Primary_logo_PURPLE.svg" alt="Braze Logo" className="w-13 relative top-[3px]" />
+        <div className="flex-col items-center gap-2">
+          <img src="/Braze_Primary_logo_PURPLE.svg" alt="Braze Logo" className="w-10 relative top-[3px]" />
           <h2 className="text-2xl font-semibold">SuperMask</h2>
         </div>
         <div className="flex items-center gap-2">
@@ -83,9 +83,10 @@ export function FloatingSidebar() {
           </button>
           <button
             onClick={() => setIsMobileMenuOpen(true)}
-            className="p-2 rounded-lg border border-border hover:bg-background/80 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:bg-background/80 transition-colors"
           >
-            <Menu className="w-5 h-5" />
+            <Settings className="w-4 h-4" />
+            <span className="text-sm font-medium">Edit & Export</span>
           </button>
         </div>
       </div>
