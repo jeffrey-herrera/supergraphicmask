@@ -92,7 +92,7 @@ export function FloatingSidebar() {
           />
           
           {/* Bottom sheet panel */}
-          <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-xl shadow-xl transform transition-transform duration-300 ease-in-out animate-in slide-in-from-bottom h-[75vh]">
+          <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-xl shadow-xl transform transition-transform duration-300 ease-in-out animate-in slide-in-from-bottom h-[90vh]">
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-border bg-gradient-to-br from-white/95 via-blue-50/60 to-purple-50/40 rounded-t-xl flex-shrink-0">

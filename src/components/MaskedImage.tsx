@@ -178,21 +178,16 @@ export function MaskedImage() {
   useEffect(() => {
     // Only attach events when canvas should be rendered
     if (!state.selectedImage || !selectedMask || !sourceImage || !maskImage) {
-      console.log('⏳ Waiting for all assets to load before attaching touch events');
       return;
     }
 
     const canvas = canvasRef.current;
     if (!canvas) {
-      console.log('❌ Canvas not found for touch events');
       return;
     }
 
-    console.log('✅ Attaching touch handlers to canvas');
-
     // Touch events
     const handleNativeTouchStart = (e: TouchEvent) => {
-      console.log('🔥 Touch start event received!', e.touches.length, 'touches');
       e.preventDefault();
       if (e.touches.length === 1) {
         const touch = e.touches[0];
@@ -209,7 +204,6 @@ export function MaskedImage() {
       }
     };
     const handleNativeTouchMove = (e: TouchEvent) => {
-      console.log('👆 Touch move event received!', e.touches.length, 'touches');
       e.preventDefault();
       if (e.touches.length === 1 && isDraggingRef.current && !isMultiTouchRef.current) {
         const touch = e.touches[0];
@@ -274,20 +268,11 @@ export function MaskedImage() {
         },
       });
     };
-    // Test listener to verify canvas can receive events
-    const testClickHandler = (e: Event) => {
-      console.log('🎯 Canvas received click/tap event!', e.type);
-    };
-
-    console.log('📱 Adding event listeners to canvas...');
-    canvas.addEventListener('click', testClickHandler);
     canvas.addEventListener('touchstart', handleNativeTouchStart, { passive: false });
     canvas.addEventListener('touchmove', handleNativeTouchMove, { passive: false });
     canvas.addEventListener('touchend', handleNativeTouchEnd, { passive: false });
     canvas.addEventListener('wheel', handleNativeWheel, { passive: false });
-    console.log('✨ Touch event listeners attached!');
     return () => {
-      canvas.removeEventListener('click', testClickHandler);
       canvas.removeEventListener('touchstart', handleNativeTouchStart);
       canvas.removeEventListener('touchmove', handleNativeTouchMove);
       canvas.removeEventListener('touchend', handleNativeTouchEnd);
