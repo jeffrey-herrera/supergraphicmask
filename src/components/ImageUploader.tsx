@@ -174,7 +174,7 @@ export function ImageUploader() {
             />
           </div>
         ) : (
-          <div className="relative h-20">
+          <div className="relative flex-1">
             <img
               src={state.selectedImage}
               alt="Selected image"
