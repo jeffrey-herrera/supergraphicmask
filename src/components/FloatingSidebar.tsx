@@ -49,7 +49,7 @@ export function FloatingSidebar() {
           {/* Hide/Show Button - Bottom right of sidebar */}
           <button
             onClick={() => setIsSidebarHidden(!isSidebarHidden)}
-            className="absolute -bottom-8 right-0 px-2 py-1 bg-background/90 hover:bg-background border border-border rounded-md shadow-lg text-xs text-muted-foreground transition-colors flex items-center gap-1 z-10"
+            className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-background/40 hover:bg-background cursor-pointer border border-border rounded-md shadow-lg text-xs text-black transition-colors flex items-center gap-1 z-10"
             title={isSidebarHidden ? "Show sidebar" : "Hide sidebar"}
           >
             {isSidebarHidden ? (
