@@ -119,21 +119,20 @@ export function ImageUploader() {
   };
 
   return (
-    <>
-      <h3 className="text-sm font-medium">Upload Image <span className="block text-[10px] text-muted-foreground/60">We'll optimize large images for you.</span></h3>
-      <div>
-        {/* Drop zone and buttons go here, no extra wrappers */}
+    <div className="h-full flex flex-col">
+      <h3 className="text-sm font-medium mb-4"><span className="text-primary">1. </span>Upload Image <span className="block text-[10px] text-muted-foreground/60">We'll optimize large images for you.</span></h3>
+      <div className="flex-1 flex flex-col">
         {!state.selectedImage ? (
           <div
             className={`
-              pointer-events-auto smooth-transition hover-lift
+              pointer-events-auto smooth-transition hover-lift flex-1
               ${isDragging 
                 ? 'scale-102 bg-primary/5 border-primary/50' 
                 : 'bg-background/60 border-border/50 hover:bg-background/80 hover:border-border/80'
               }
               ${isProcessing ? 'cursor-not-allowed' : 'cursor-pointer'}
               backdrop-blur-sm border-2 border-solid rounded-xl
-              px-4 text-center max-w-full w-full h-full flex flex-col justify-center
+              px-4 text-center max-w-full w-full flex flex-col justify-center
             `}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
@@ -175,20 +174,18 @@ export function ImageUploader() {
             />
           </div>
         ) : (
-          <div className="space-y-2">
-            <div className="relative">
-              <img
-                src={state.selectedImage}
-                alt="Selected image"
-                className="w-full h-16 object-cover rounded-lg smooth-transition hover-lift"
-              />
-            </div>
-            <div className="flex gap-2">
+          <div className="relative h-20">
+            <img
+              src={state.selectedImage}
+              alt="Selected image"
+              className="w-full h-full object-cover rounded-lg smooth-transition"
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-lg">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex-1 smooth-transition hover-lift text-xs h-7"
+                className="bg-white/95 hover:bg-white text-black border-white/50 smooth-transition hover-lift text-xs cursor-pointer"
                 disabled={isProcessing}
               >
                 {isProcessing ? (
@@ -203,18 +200,18 @@ export function ImageUploader() {
                   </>
                 )}
               </Button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileInput}
-                disabled={isProcessing}
-              />
             </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileInput}
+              disabled={isProcessing}
+            />
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }

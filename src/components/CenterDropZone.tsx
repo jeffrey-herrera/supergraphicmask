@@ -146,7 +146,7 @@ export function CenterDropZone() {
             : 'bg-background/60 border-border/50 hover:bg-background/80 hover:border-border/80 animate-border-pulse'
           }
           ${isProcessing ? 'cursor-not-allowed' : 'cursor-pointer'}
-          backdrop-blur-sm border-2 border-solid rounded-2xl
+          backdrop-blur-sm border border-solid rounded-2xl
           px-12 py-16 text-center max-w-md
         `}
         onDragOver={handleDragOver}

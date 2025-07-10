@@ -473,7 +473,7 @@ export function MaskedImage() {
         
         {/* Helper text when active */}
         {state.selectedImage && selectedMask && (
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center text-xs text-muted-foreground/60 bg-background/60 backdrop-blur-sm px-3 py-1 rounded-full">
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center text-xs text-muted-foreground/60 bg-background/60 backdrop-blur-sm px-3 py-1 rounded-full">
             <span className="hidden sm:inline">Drag to pan • Scroll to zoom</span>
             <span className="sm:hidden">Drag to pan • Pinch to zoom</span>
           </div>

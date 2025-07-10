@@ -21,12 +21,12 @@ export function AppContent() {
   }, [state.selectedMask, dispatch]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen bg-background overflow-hidden">
       {/* Horizontal Sidebar */}
       <FloatingSidebar />
       
       {/* Full-screen Preview - with top padding for horizontal sidebar */}
-      <div className="pt-40 md:pt-32 lg:pt-28">
+      <div className="pt-40 md:pt-32 lg:pt-28 h-full">
         <MaskedImage />
       </div>
       

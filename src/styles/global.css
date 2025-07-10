@@ -92,9 +92,13 @@
     border-color: #801ED7;
     box-shadow: 0 0 0 0 #801ED7;
   }
-  70% {
+  35% {
     border-color: #801ED7;
     box-shadow: 0 0 0 16px rgba(128, 30, 215, 0);
+  }
+  50% {
+    border-color: #801ED7;
+    box-shadow: 0 0 0 0 rgba(128, 30, 215, 0);
   }
   100% {
     border-color: #801ED7;

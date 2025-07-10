@@ -153,20 +153,23 @@ export function ExportButton({ selectedSize }: ExportButtonProps) {
   const isDisabled = !state.selectedImage || !state.selectedMask || isExporting;
 
   return (
-    <div>
-      {/* Export Button and help text go here, no extra wrappers */}
-      <div className="w-full space-y-4">
-        {/* Export Button */}
-        <button
-          className="w-full h-16 rounded-full bg-primary text-white font-semibold text-lg flex items-center justify-center disabled:opacity-50"
-          disabled
-        >
-          <span className="mr-2">⬇️</span> Export Image
-        </button>
-        <div className="text-xs text-muted-foreground text-center">
-          Add an image and shape to export
-        </div>
-      </div>
+    <div className="h-full flex items-center justify-center">
+      <button
+        onClick={() => handleExport(selectedSize)}
+        disabled={isDisabled}
+        className={`w-full font-bold text-base py-8 px-4 rounded-full shadow-2xl transition-all duration-300 transform flex items-center justify-center gap-2 relative overflow-hidden ${
+          isDisabled 
+            ? 'bg-gray-400 text-gray-200 cursor-not-allowed opacity-60' 
+            : 'bg-gradient-to-r from-[#5710E5] via-[#7C3AED] to-[#A855F7] hover:from-[#4A0DCC] hover:via-[#6B21A8] hover:to-[#9333EA] text-white hover:shadow-[0_20px_40px_-8px_rgba(87,16,229,0.6)] hover:scale-[1.02] active:scale-[0.98] cursor-pointer'
+        }`}
+      >
+        {isExporting ? (
+          <Loader2 className="w-5 h-5 animate-spin" />
+        ) : (
+          <Download className="w-5 h-5" />
+        )}
+        <span>{isExporting ? 'Exporting...' : 'Export Image'}</span>
+      </button>
     </div>
   );
 }

@@ -79,9 +79,9 @@ export function BottomControls() {
   const isFillActive = state.transform.scale === 1 && state.transform.translateX === 0 && state.transform.translateY === 0;
 
   return (
-    <div className="fixed bottom-4 right-4 z-30">
-      <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg px-4 py-3">
-        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+    <div className="fixed bottom-0 left-0 right-0 lg:bottom-4 lg:right-4 lg:left-auto z-30">
+      <div className="bg-background/95 backdrop-blur-sm border-t lg:border lg:border-border lg:rounded-lg shadow-lg px-4 py-3">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
           {/* Zoom controls */}
           <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
             <Button
@@ -152,8 +152,8 @@ export function BottomControls() {
               disabled={isDisabled}
               className={isContainActive ? 'border-primary' : ''}
             >
-              <Minimize2 className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Contain</span>
+              <Minimize2 className="w-4 h-4 mr-2" />
+              <span>Contain</span>
             </Button>
             
             <Button
@@ -163,8 +163,8 @@ export function BottomControls() {
               disabled={isDisabled}
               className={isFillActive ? 'border-primary' : ''}
             >
-              <Maximize2 className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Fill</span>
+              <Maximize2 className="w-4 h-4 mr-2" />
+              <span>Fill</span>
             </Button>
             
             <Button
@@ -173,8 +173,8 @@ export function BottomControls() {
               onClick={handleReset}
               disabled={isDisabled}
             >
-              <RotateCcw className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Reset</span>
+              <RotateCcw className="w-4 h-4 mr-2" />
+              <span>Reset</span>
             </Button>
           </div>
         </div>
