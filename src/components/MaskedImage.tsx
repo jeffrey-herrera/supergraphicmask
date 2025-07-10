@@ -176,6 +176,12 @@ export function MaskedImage() {
   // --- Native event handler versions for passive: false ---
   // Native touch and wheel handlers
   useEffect(() => {
+    // Only attach events when canvas should be rendered
+    if (!state.selectedImage || !selectedMask || !sourceImage || !maskImage) {
+      console.log('⏳ Waiting for all assets to load before attaching touch events');
+      return;
+    }
+
     const canvas = canvasRef.current;
     if (!canvas) {
       console.log('❌ Canvas not found for touch events');
@@ -187,10 +193,6 @@ export function MaskedImage() {
     // Touch events
     const handleNativeTouchStart = (e: TouchEvent) => {
       console.log('🔥 Touch start event received!', e.touches.length, 'touches');
-      if (!state.selectedImage || !selectedMask) {
-        console.log('Touch blocked: selectedImage:', !!state.selectedImage, 'selectedMask:', !!selectedMask);
-        return;
-      }
       e.preventDefault();
       if (e.touches.length === 1) {
         const touch = e.touches[0];
@@ -208,10 +210,6 @@ export function MaskedImage() {
     };
     const handleNativeTouchMove = (e: TouchEvent) => {
       console.log('👆 Touch move event received!', e.touches.length, 'touches');
-      if (!state.selectedImage || !selectedMask) {
-        console.log('Touch move blocked: selectedImage:', !!state.selectedImage, 'selectedMask:', !!selectedMask);
-        return;
-      }
       e.preventDefault();
       if (e.touches.length === 1 && isDraggingRef.current && !isMultiTouchRef.current) {
         const touch = e.touches[0];
@@ -265,7 +263,6 @@ export function MaskedImage() {
     };
     // Wheel event
     const handleNativeWheel = (e: WheelEvent) => {
-      if (!state.selectedImage || !selectedMask) return;
       e.preventDefault();
       const delta = e.deltaY > 0 ? -0.1 : 0.1;
       const newScale = Math.max(0.1, Math.min(3, state.transform.scale + delta));
@@ -296,7 +293,7 @@ export function MaskedImage() {
       canvas.removeEventListener('touchend', handleNativeTouchEnd);
       canvas.removeEventListener('wheel', handleNativeWheel);
     };
-  }, [state.selectedImage, selectedMask, state.transform, dispatch]);
+  }, [state.selectedImage, selectedMask, sourceImage, maskImage, state.transform, dispatch]);
 
   // Remove e.preventDefault() from React synthetic handlers
   const handleTouchStart = () => {};
